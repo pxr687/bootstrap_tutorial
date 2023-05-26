@@ -56,7 +56,7 @@ This section could do with "unrolling" and more illustrations etc.
 
 For the graph "Population Median and Intervals of Estimates" REALLY break down what the graph shows, what has gone into the intervals.
 
-Hammer home CORRECT interpretation of the confidence interval and common misinterpretations. 
+Hammer home CORRECT interpretation of the confidence interval and common misinterpretations. The "confidence" part of confidence intervals refers to the METHOD by which they are constructed <- mention Bayes intervals for another lecture!
 
 
 # Section at end - what if we bootstrap from an unrepresentative sample?
