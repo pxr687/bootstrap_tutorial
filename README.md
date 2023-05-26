@@ -1,5 +1,8 @@
-Randomized controlled trials in patients with COVID-19: a systematic review and critical appraisal
+# Part 1 - Data Science 
 
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9113951/
+## Definitions
+Data science - the implementation of statistics using code and algorithms
 
-https://github.com/Wetiqe/UoB-DS-Semester1/blob/main/nobler_monkeys/nobler_monkeys.ipynb
+**The fundamental problem of data science**: what we care about are populations, but all we (usually!) have access to are samples.
+
+More spcecifically: we care about populations and parameters but all we have access to are samples and statistics
