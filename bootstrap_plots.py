@@ -74,9 +74,8 @@ def population_plot_sf_data(sf2015, bins = []):
     plt.hist(population, label = "Population", bins = bins)
     plt.axvline(population.median(), color = "darkblue", 
                 label = 'Population Median')
-    plt.xlabel('Total Compensation')
     plt.ylabel('Frequency')
-    plt.legend(bbox_to_anchor = (1, 1))
+    add_x_labels_total_compensation()
     plt.show()
 
 def population_plot_sf_data_with_sample(sf2015, bins = [], sample_size = 500):
@@ -94,8 +93,13 @@ def population_plot_sf_data_with_sample(sf2015, bins = [], sample_size = 500):
     plt.axvline(population.median(), color = "darkblue", 
                 label = 'Population Median')
     plt.axvline(np.median(sample), color = "darkred", label = 'Sample Median')
-    plt
-    plt.xlabel('Total Compensation')
     plt.ylabel('Frequency')
-    plt.legend(bbox_to_anchor = (1, 1))
+    add_x_labels_total_compensation()
     plt.show()
+
+
+def add_x_labels_total_compensation():
+    """Convenience function for adding x-axis labels and showing the legend."""
+    plt.legend(bbox_to_anchor = (1, 1))
+    plt.xlabel('Total Compensation')
+    plt.xticks(rotation = 60)

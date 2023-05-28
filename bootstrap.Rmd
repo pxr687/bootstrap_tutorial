@@ -20,6 +20,7 @@ jupyter:
 import numpy as np
 import pandas as pd
 from bootstrap_plots import *
+from IPython.display import display, Markdown
 
 # Safe settings for Pandas.
 pd.set_option('mode.chained_assignment', 'raise')
@@ -40,10 +41,10 @@ notebook of an older version of the [UC Berkeley data science course](https://in
 Data science can be (very) roughly defined as the implementation of statistical
 analysis in code and algorithms.
 
-We could also partly define data science as the science of drawing insights from data, 
+We could also very (roughlt) define data science as the science of drawing insights from data, 
 using code, under uncertainty.
 
-It's that uncertainty that creates what I'll call "The Fundamental Problem" of data science:
+This uncertainty results from what I'll call "The Fundamental Problem" of data science:
 
 > *What we care about are populations, but all we (usually!) have access to are samples.*
 
@@ -54,6 +55,11 @@ More spcecifically: we care about populations and parameters but all we have acc
 * Sample - a subset of a population
 
 The problem we face with samples - even if they are randomly collected - is *sampling error*.
+
+One of the beautiful things about code is the ability to simulate data to vividly illustrate
+statistical principles.
+
+The code cell below creates some data for a hypothetical population:
 <!-- #endregion -->
 
 ```{python}
@@ -61,16 +67,19 @@ The problem we face with samples - even if they are randomly collected - is *sam
 population = population_plot(population_size = 10000)
 ```
 
-A random sample is unlikely to *perfectly* capture the population parameter.
+Truly random samples are the gold dust of empirical research, as they are
+on average likely to represent underlying populations.
 
-It is like to be "off" in either direction.
+However, a random sample is unlikely to *perfectly* capture the population parameter.
 
-The code cell below randomly draws a sample from the population we created earlier,
+It is like to be somewhat "off" from the true population parameter.
+
+The code cell below randomly draws a sample from the population we created just now,
 and shows it alongside the population data:
 
 ```{python}
 # draw a random sample from the population data
-population_plot_with_sample(population, sample_size = 20)
+population_plot_with_sample(population, sample_size = 15)
 ```
 
 However, even if our sample is perfectly random, some proportion of the time
@@ -78,7 +87,7 @@ we are going to end up with samples that badly estimate the population parameter
 
 ```{python}
 # draw an unrepresentative sample from the data
-population_plot_with_unrepresentative_sample(population)
+population_plot_with_unrepresentative_sample(population, sample_size = 15)
 ```
 
 ### A typical research situation
@@ -199,7 +208,7 @@ sf2015['Total Compensation'].plot.hist(bins=sf_bins)
 plt.xlabel('Total Compensation')
 
 # rotate the x-axis labels, for clarity
-plt.xticks(rotation = 35);
+plt.xticks(rotation = 60);
 ```
 
 This is fairly typical for an income distribution - a lot of people have a little, a lot of people have some and a very small number of people have a lot...
@@ -226,7 +235,7 @@ compensation = sf2015['Total Compensation']
 pop_median = np.median(compensation)
 
 # show the population median
-pop_median
+print(f"The population median = {pop_median}")
 ```
 
 ```{python}
@@ -254,7 +263,7 @@ serve as our estimate of the parameter.
 
 ```{python}
 # draw a random sample, without replacement, from the population data
-population_plot_sf_data_with_sample(sf2015, bins = sf_bins, sample_size = 20) 
+population_plot_sf_data_with_sample(sf2015, bins = sf_bins, sample_size = 15) 
 ```
 
 For the rest of the tutorial, we'll use a larger sample of 500 employees to estimate the
@@ -272,9 +281,10 @@ our_sample.plot.hist(bins=sf_bins, color = 'red', label = "Sample")
 # show the sample median
 plt.axvline(np.median(our_sample), color = 'darkred', label = "Sample Median")
 
-# show the legend
-plt.legend(bbox_to_anchor = (1, 1))
-plt.xticks(rotation = 35);
+# show the legend, add x-axis labels
+add_x_labels_total_compensation();
+
+display(Markdown(f"Sample Median = {round(np.median(our_sample))}"))
 ```
 
 ```{python}
@@ -352,25 +362,34 @@ Here is one new sample drawn from the original sample, with replacement, and
 the corresponding sample median.
 
 ```{python}
+# draw a new sample
 resample_1 = our_sample.sample(500, replace=True)
-resample_1
+
+# show the sample
+print(resample_1)
+
+print(f"\n\nThe median of the current resample is {np.median(resample_1)}")
 ```
 
 ```{python}
+# draw a new sample
+resample_1 = our_sample.sample(500, replace=True)
+
+# show the sample
+print(resample_1)
+
 # plot the new sample
 resample_1.plot.hist(bins=sf_bins, color = "red", label = "Sample")
 
 # show the sample median
 plt.axvline(np.median(our_sample), color = 'darkred', label = "Sample Median")
 
-# show the legend
-plt.legend(bbox_to_anchor = (1, 1))
-plt.xticks(rotation = 35);
-```
-
-```{python}
+# calculate the median
 resampled_median_1 = np.median(resample_1)
-resampled_median_1
+plt.title(f"Resample median = {int(np.round(resampled_median_1))}")
+
+# show the legend, add x-axis labels
+add_x_labels_total_compensation();
 ```
 
 By resampling, we have something like another estimate of the population
@@ -414,11 +433,20 @@ def bootstrap_median(original_sample, replications):
     samp_meds : array
         Array of bootstrapped sample medians.
     """
+    # calculate the length of the original sample
     n = len(original_sample)
+    
+    # create an empty array to store the estimate of the medians
+    # over repeated resamples
     medians = np.zeros(replications)
+
+    # repeat the resampling procedure, and store the estimate of
+    # the median each time
     for i in np.arange(replications):
         bootstrap_sample = original_sample.sample(n, replace=True)
         medians[i] = np.median(bootstrap_sample)
+        
+    # return the array of estimate medians
     return medians
 ```
 
@@ -427,7 +455,11 @@ contains the medians of all 5,000 bootstrap samples. Notice that the code
 takes longer to run than our previous code. It has a lot of resampling to do!
 
 ```{python}
+# run our function, to generate an array containing the bootstrapped medians
 bstrap_medians = bootstrap_median(our_sample, 5000)
+
+# show the array
+bstrap_medians
 ```
 
 Here is the histogram of the 5000 medians. The red dot is the population
@@ -435,22 +467,27 @@ parameter: it is the median of the entire population, which we happen to know
 but did not use in the bootstrap process.
 
 ```{python}
+# a new dataframe for the medians, obtained via resampling
 resampled_medians = pd.DataFrame()
-resampled_medians['Bootstrap Sample Median'] = bstrap_medians
+resampled_medians['Bootstrap Sample Medians'] = bstrap_medians
 
-resampled_medians.plot.hist()
+# plot the distribution of bootstrapped medians
+resampled_medians.plot.hist(color = 'purple', bins = 20)
 
-plt.scatter(pop_median, 0, color='red', s=30);
-plt.title('Bootstrap sampling distribution of median')
-plt.xticks(rotation = 35);
+# show the population median
+plt.axvline(pop_median,  color='blue', label = 'Population Median')
+
+# add title and labels to the plot
+plt.title('Bootstrap sampling distribution of the median')
+add_x_labels_total_compensation();
 ```
 
-It is important to remember that the red dot is fixed: it is \$110,305.79, the
+It is important to remember that the blue line is fixed: it is \\\$110,305.79, the
 population median. The empirical histogram is the result of random draws, and
-will be situated randomly relative to the red dot.
+will be situated randomly relative to the blue line.
 
 Remember also that the point of all these computations is to estimate the
-population median, which is the red dot. Our estimates are all the randomly
+population median, which is the blue line. Our estimates are all the randomly
 generated sampled medians whose histogram you see above. We want those
 estimates to contain the parameter – it they don't, then they are off.
 
@@ -459,18 +496,20 @@ estimates to contain the parameter – it they don't, then they are off.
 
 
 How often does the empirical histogram of the resampled medians sit firmly over
-the red dot, and not just brush the dot with its tails? To answer this, we must
+the blue line, and not just brush the linewith its tails? To answer this, we must
 define "sit firmly". Let's take that to mean "the middle 95% of the resampled
 medians contains the red dot".
 
 Here are the two ends of the "middle 95%" interval of resampled medians:
 
 ```{python}
+# calculate the 2.5 percentile of the bootstrapped medians
 left = np.percentile(bstrap_medians, 2.5)
 left
 ```
 
 ```{python}
+# calculate the 97.5 percentile of the bootstrapped medians
 right = np.percentile(bstrap_medians, 97.5)
 right
 ```
@@ -478,6 +517,7 @@ right
 In fact we can get both left and right percentiles in one call, like this:
 
 ```{python}
+# get both the percentiles in an array
 np.percentile(bstrap_medians, [2.5, 97.5])
 ```
 
@@ -485,19 +525,19 @@ We can use unpacking in the usual way, to set our `left` and `right` variables:
 
 ```{python}
 left, right = np.percentile(bstrap_medians, [2.5, 97.5])
-print('Left', left)
-print('Right', right)
+print('Left:', left)
+print('Right:', right)
 ```
 
 The population median of \$110,305 is between these two numbers, `left` and
 `right`. We show the interval and the population median on the histogram below.
 
 ```{python}
-resampled_medians.hist()
-
-plt.plot([left, right], [0, 0], color='yellow', lw=8, zorder=1)
-plt.scatter(pop_median, 0, color='red', s=200, zorder=2)
-plt.xticks(rotation = 35);
+resampled_medians.plot.hist(color = 'purple')
+plt.axvline(pop_median,  color='blue', label = 'Population Median')
+plt.plot([left, right], [0, 0], color='yellow', lw=8, zorder=1,
+         label = "Interval containing 95% of the\nbootstrapped medians")
+add_x_labels_total_compensation();
 ```
 
 The "middle 95%" interval of estimates captured the parameter in our example.
@@ -519,14 +559,25 @@ one left and one right interval.  This is the code we have been using above.
 # Take a new sample.
 this_sample = compensation.sample(500, replace=True)
 # Get the bootstrap sampling distribution of the median.
-these_medians = bootstrap_median(this_sample, 5000)
-# Calculate the left, right ends.
+these_medians = pd.Series(bootstrap_median(this_sample, 5000))
+
+these_medians.plot.hist(color = 'purple')
+plt.axvline(pop_median,  color='blue', label = 'Population Median')
+
+# Calculate the left, right ends, and plot them.
 left_end, right_end = np.percentile(these_medians, [2.5, 97.5])
+plt.plot([left_end, right_end], [0, 0], color='yellow', lw=8, zorder=1,
+         label = "Interval containing 95% of the\nbootstrapped medians")
+
+# add plot labels
+add_x_labels_total_compensation();
+
+# show the left and right end values
 print('Left', left_end)
 print('Left', right_end)
 ```
 
-We will repeat this trial procedure 100 times, to give with 100 left and right
+We will repeat this trial procedure 20 times, to give with 20 left and right
 intervals, and count how many of these intervals contain the population median.
 
 **Spoiler alert:** The statistical theory of the bootstrap says that the number
@@ -536,12 +587,12 @@ off 95 than that.
 ```{python}
 # THE BIG SIMULATION: This one can take several minutes.
 
-# Set up to make 100 left and right intervals
-n_intervals = 100
+# Set up to make 20 left and right intervals
+n_intervals = 20
 left_ends = np.zeros(n_intervals)
 right_ends = np.zeros(n_intervals)
 
-for i in np.arange(100):
+for i in np.arange(n_intervals):
     # One trial, generating a left and right interval.
     # Take a new sample.
     this_sample = compensation.sample(500, replace=True)
@@ -559,7 +610,7 @@ intervals['Left'] = left_ends
 intervals['Right'] = right_ends
 ```
 
-For each of the 100 replications, we get one (left, right) interval of
+For each of the 25 replications, we get one (left, right) interval of
 estimates of the median.
 
 ```{python}
@@ -574,7 +625,7 @@ know what the parameter is.
 pop_median
 ```
 
-How many of the 100 intervals contain the population median? That's the number
+How many of the 20 intervals contain the population median? That's the number
 of intervals where the left end is below the population median and the right
 end is above.
 
