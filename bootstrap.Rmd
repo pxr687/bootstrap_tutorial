@@ -630,12 +630,12 @@ of intervals where the left end is below the population median and the right
 end is above.
 
 ```{python}
-inside = np.logical_and(left_ends < pop_median, right_ends > pop_median)
-intervals[inside]
+intervals["Contains Population Median"] = np.logical_and(left_ends < pop_median, right_ends > pop_median)
+intervals
 ```
 
 It takes a few minutes to construct all the intervals, but try it again if you
-have the patience. Most likely, about 95 of the 100 intervals will be good
+have the patience. Most likely, about 95% intervals will be good
 ones: they will contain the parameter.
 
 It's hard to show you all the intervals on the horizontal axis as they have
@@ -658,13 +658,15 @@ likely to be off.
 ```{python tags=c("hide-cell")}
 plt.figure(figsize=(8,8))
 for i in np.arange(len(intervals)):
-    ends = intervals.iloc[i]
+    ends = intervals[['Left', 'Right']].iloc[i]
     plt.plot(ends, [i, i], color='gold')
-plt.plot([pop_median, pop_median], [0, 100],
-         color='red', lw=2)
-plt.xlabel('Median (dollars)')
-plt.ylabel('Replication')
-plt.title('Population Median and Intervals of Estimates');
+plt.axvline(pop_median,  color='blue', label = 'Population Median')
+plt.plot([], [], color = 'gold',
+         label = "Intervals containing 95% of the\nbootstrapped medians for a given replication")
+plt.ylabel('Replication Number')
+plt.yticks(np.arange(n_intervals))
+plt.title('Population Median and Intervals of Estimates')
+add_x_labels_total_compensation();
 ```
 
 To summarize what the simulation shows, suppose you are estimating the
@@ -676,7 +678,7 @@ population median by the following process:
 * Pick off the "middle 95%" interval of all the estimates.
 
 That gives you one interval of estimates. Now if you repeat **the entire
-process** 100 times, ending up with 100 intervals, then about 95 of those 100
+process** 20 times, ending up with 20 intervals, then about 95% of those 20
 intervals will contain the population parameter.
 
 In other words, this process of estimation captures the parameter about 95% of
@@ -688,4 +690,5 @@ of estimates will be shorter than those we simulated here, because the "middle
 80%" is a smaller range than the "middle 95%". Only about 80% of your intervals
 will contain the parameter.
 
-{ucb-page}`Bootstrap`
+> This page has content from the [Bootstrap](https://github.com/data-8/textbook/blob/64b20f0/notebooks/Bootstrap.ipynb)
+notebook of an older version of the [UC Berkeley data science course](https://inferentialthinking.com/). See the Berkeley course section of the [license file](https://uob-ds.github.io/cfd2021/license).
