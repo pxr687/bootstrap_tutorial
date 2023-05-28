@@ -112,9 +112,8 @@ sf2015[sf2015['Job'] == 'Mayor']
 
 ## Population and Parameter
 
-
 The 36,500 rows of the table above are our population. Let the population parameter
- we are interested in be the the median `Total Compensation`.
+we are interested in be the the median `Total Compensation`.
 
 Here is a histogram of the total compensations, along with the population parameter of interest:
 
@@ -155,8 +154,7 @@ print(f"The population median = {pop_median}")
 
 The median total compensation of all employees was just over \$110,300.
 
-## A Random Sample and an Estimate
-
+## Sample and Statistic
 
 [Link this back better to intro]
 
@@ -199,16 +197,8 @@ We will now see how and why the bootstrap works.
 # draw a sample of size 500 from the compensation Series, without replacement.
 our_sample = compensation.sample(500, replace=False)
 
-# plot a histogram of the sample
-our_sample.plot.hist(bins=sf_bins, color = 'red', label = "Sample")
-
-# show the sample median
-plt.axvline(np.median(our_sample), color = 'darkred', label = "Sample Median")
-
-# show the legend, add x-axis labels
-add_x_labels_total_compensation();
-
-display(Markdown(f"Sample Median = {round(np.median(our_sample))}"))
+# plot a histogram of the sample (and its median)
+plot_our_sample(our_sample, sf_bins)
 ```
 
 ## The Bootstrap: Resampling from the Sample
@@ -459,7 +449,7 @@ this_sample = compensation.sample(500, replace=True)
 # Get the bootstrap sampling distribution of the median.
 these_medians = pd.Series(bootstrap_median(this_sample, 5000))
 
-these_medians.plot.hist(color = 'purple')
+these_medians.plot.hist(color = 'purple', label = "Boostrap Sample Medians")
 plt.axvline(pop_median,  color='blue', label = 'Population Median')
 
 # Calculate the left, right ends, and plot them.
@@ -468,7 +458,8 @@ plt.plot([left_end, right_end], [0, 0], color='yellow', lw=8, zorder=1,
          label = "Interval containing 95% of the\nbootstrapped medians")
 
 # add plot labels
-add_x_labels_total_compensation();
+add_x_labels_total_compensation()
+plt.show()
 
 # show the left and right end values
 print('Left', left_end)
@@ -595,6 +586,11 @@ Remember our data scientists predicament?
 
 [common misinterpretations - the confidence level refers to the *method* of constructing
 the intervals, but is commonly misinterpretted as referring to the the interval itself]
+
+[You can use interval as a *guide* to where the population parameter may be - it is incorrect to
+state that there is a 95% chance that the population parameter]
+
+[If we were to repeat the sampling process multiple times and construct 95% confidence intervals from each sample, we would expect that approximately 95% of those intervals would contain the true population parameter.]
 <!-- #endregion -->
 
 *Note*: This page has content from the [Bootstrap](https://github.com/data-8/textbook/blob/64b20f0/notebooks/Bootstrap.ipynb)
