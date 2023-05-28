@@ -50,9 +50,9 @@ A data scientist is using the data in a random sample to estimate an unknown par
 
 Once she has calculated the observed value of her statistic, she could just present it as her estimate and go on her merry way. But she’s a data scientist. She knows that her random sample is just one of numerous possible random samples, and thus her estimate is just one of numerous plausible estimates.
 
-By how much could those estimates vary? To answer this, it appears as though she needs to draw another sample from the population, and compute a new estimate based on the new sample. But she doesn’t have the resources to go back to the population and draw another sample.
+By how much could those estimates vary? To answer this, it appears as though she needs to draw many other samples from the population, and compute a new estimates based on the each new sample. But she doesn’t have the resources to go back to the population and draw other samples.
 
-It looks as though the data scientist is stuck.
+It looks as though the data scientist is stuck with the sample she has, and knows that it is uncertain whether her sample gives a *good* estimate of the underlying population parameter.
 
 This scenario illustrates what I will call "The Fundamental Problem" of data science:
 
@@ -92,7 +92,7 @@ population_plot_with_unrepresentative_sample(population, sample_size = 15)
 
 Fortunately, a brilliant idea called *the bootstrap* can help us address the Fundamental Problem. 
 
-The bootstrap let's us quantify the uncertainty in our estimates of underlying population parameters.
+The bootstrap let's us produce confidence intervals which quantify the uncertainty in our estimates of underlying population parameters.
 
 Since it is not feasible to generate new samples from the population, the bootstrap
 generates new random samples by a method called *resampling*: the new samples
@@ -232,9 +232,6 @@ serve as our estimate of the parameter.
 population_plot_sf_data_with_sample(sf2015, bins = sf_bins, sample_size = 15) 
 ```
 
-For the rest of the tutorial, we'll use a larger sample of 500 employees to estimate the
-population parameter.
-
 Let's have a look at the histogram of a random sample of 500 employees.
 
 ```{python}
@@ -292,8 +289,7 @@ Here are the steps of *the bootstrap method* for generating another random
 sample that resembles the population:
 
 - **Treat the original sample as if it were the population.**
-- **Draw from the sample**, at random **with** replacement, **the same number
-  of times as the original sample size**.
+- **Draw from the sample**, at random **with** replacement, **a sample which is the same size as the original sample size**.
 
 It is important to resample the same number of times as the original sample
 size. The reason is that the variability of an estimate depends on the size of
