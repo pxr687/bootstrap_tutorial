@@ -472,7 +472,7 @@ resampled_medians = pd.DataFrame()
 resampled_medians['Bootstrap Sample Medians'] = bstrap_medians
 
 # plot the distribution of bootstrapped medians
-resampled_medians.plot.hist(color = 'purple', bins = 20)
+resampled_medians.plot.hist(color = 'purple')
 
 # show the population median
 plt.axvline(pop_median,  color='blue', label = 'Population Median')
@@ -669,6 +669,7 @@ plt.title('Population Median and Intervals of Estimates')
 add_x_labels_total_compensation();
 ```
 
+<!-- #region -->
 To summarize what the simulation shows, suppose you are estimating the
 population median by the following process:
 
@@ -689,6 +690,14 @@ replace 95% by 80% and keep the sample size fixed at 500. Then your intervals
 of estimates will be shorter than those we simulated here, because the "middle
 80%" is a smaller range than the "middle 95%". Only about 80% of your intervals
 will contain the parameter.
+
+# Back to The Fundamental Problem of Data Science
+
+Remember our data scientists predicament? 
+
+[common misinterpretations - the confidence level refers to the *method* of constructing
+the intervals, but is commonly misinterpretted as referring to the the interval itself]
+<!-- #endregion -->
 
 > This page has content from the [Bootstrap](https://github.com/data-8/textbook/blob/64b20f0/notebooks/Bootstrap.ipynb)
 notebook of an older version of the [UC Berkeley data science course](https://inferentialthinking.com/). See the Berkeley course section of the [license file](https://uob-ds.github.io/cfd2021/license).
