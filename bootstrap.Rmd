@@ -50,7 +50,7 @@ A data scientist is using the data in a random sample to estimate an unknown par
 
 Once she has calculated the observed value of her statistic, she could just present it as her estimate and go on her merry way. But she’s a data scientist. She knows that her random sample is just one of numerous possible random samples, and thus her estimate is just one of numerous plausible estimates.
 
-By how much could those estimates vary? To answer this, it appears as though she needs to draw many other samples from the population, and compute a new estimates based on the each new sample. But she doesn’t have the resources to go back to the population and draw other samples.
+By how much could those estimates vary - *how far could her estimate be from the population parameter*? To answer this, it appears as though she needs to draw many other samples from the population, and compute a new estimates based on the each new sample. But she doesn’t have the resources to go back to the population and draw other samples.
 
 It looks as though the data scientist is stuck with the sample she has, and knows that it is uncertain whether her sample gives a *good* estimate of the underlying population parameter.
 
@@ -94,18 +94,20 @@ Fortunately, a brilliant idea called *the bootstrap* can help us address the Fun
 
 The bootstrap let's us produce confidence intervals which quantify the uncertainty in our estimates of underlying population parameters.
 
-Since it is not feasible to generate new samples from the population, the bootstrap
-generates new random samples by a method called *resampling*: the new samples
-are drawn at random *from the original sample*.
+It gives us an estimate of the degree to which sampling error has likely distorted our estimate, and produce an interval which estimates where the true parameter lies. This is more informative than the single estimate produced by our sample.
 
-In this section, we will see how and why the bootstrap works. In the rest of
-the chapter, we will use the bootstrap for inference.
+In real life, with real data, it is generally not feasible to generate new samples from the population, so the bootstrap
+let's us estimate sampling error. It does so by simulating drawing new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*.
+
+*This may seem like a sleight of hand, but hopefully I can convince you it works!*
+
+We will now see how and why the bootstrap works. 
 
 ## Employee Compensation in the City of San Francisco
 
 
 We're going to use a real dataset now which puts us in the rare situation of
-being able to view a entire population of data.
+being able to view a entire population of datapoints.
 
 [SF OpenData](https://data.sfgov.org) is a website where the City and County of
 San Francisco make some of their data publicly available. One of the data sets
@@ -232,7 +234,24 @@ serve as our estimate of the parameter.
 population_plot_sf_data_with_sample(sf2015, bins = sf_bins, sample_size = 15) 
 ```
 
-Let's have a look at the histogram of a random sample of 500 employees.
+If the sample size is large, then by the law of averages, the distribution of the
+sample resembles that of the population, and consequently each sample median is
+unlikely to be very far from the population median (though of course it is not likely to 
+be exactly the same).
+
+The situation were are typical in this: we have one sample giving us one estimate of a population parameter. But had the sample come out differently, the estimate would have had a different value. We would like to be
+able to quantify the amount by which the estimate could vary across samples.
+That measure of variability will help us measure how accurately we can estimate
+the parameter.
+
+In the present situation - with access to an entire population's worth of data! - to see how different the estimate would be if the sample had come out differently, we could just draw another sample from the population, but that
+would be cheating. We are trying to mimic real life, where typically we won't have all the population data at hand.
+
+Somehow, we have to get another random sample without sampling from the
+population.
+
+The code cell below is going to simulate the typical situation we will be when doing data science:
+we have one sample, and must estimate population parameters using this one sample...
 
 ```{python}
 # draw a sample of size 500 from the compensation Series, without replacement.
@@ -250,35 +269,9 @@ add_x_labels_total_compensation();
 display(Markdown(f"Sample Median = {round(np.median(our_sample))}"))
 ```
 
-```{python}
-# store the sample median as a variable
-est_median = np.median(our_sample)
-est_median
-```
-
-The sample size is large. By the law of averages, the distribution of the
-sample resembles that of the population, and consequently the sample median is
-not very far from the population median (though of course it is not exactly the
-same).
-
-So now we have one estimate of the parameter. But had the sample come out
-differently, the estimate would have had a different value. We would like to be
-able to quantify the amount by which the estimate could vary across samples.
-That measure of variability will help us measure how accurately we can estimate
-the parameter.
-
-To see how different the estimate would be if the sample had come out
-differently, we could just draw another sample from the population, but that
-would be cheating. We are trying to mimic real life, in which we won't have all
-the population data at hand.
-
-Somehow, we have to get another random sample without sampling from the
-population.
-
-
 ## The Bootstrap: Resampling from the Sample
 
-
+<!-- #region -->
 What we do have is a large random sample from the population. As we know, a
 large random sample is likely to resemble the population from which it is
 drawn. This observation allows data scientists to *lift themselves up by their
@@ -297,6 +290,8 @@ the sample. Since our original sample consisted of 500 employees, our sample
 median was based on 500 values. To see how different the sample could have
 been, we have to compare it to the median of other samples of size 500.
 
+#### Why do we resample WITH replacement?
+
 If we drew 500 times at random *without* replacement from our sample of size
 500, we would just get the same sample back. By drawing *with* replacement, we
 create the possibility for the new samples to be different from the original,
@@ -309,12 +304,12 @@ distributions of all the resamples are likely to resemble the population as
 well.
 
 ![](bootstrap_pic.png)
+<!-- #endregion -->
 
 ## A Resampled Median
 
 
-We will use the `sample` method of the Series to take the new sample with
-replacement.
+Our `compensation` values are stored in a pandas Series. We will use the `sample` method of a pandas Series to take the new sample with replacement.
 
 We want a sample the same size as the original sample (500), where we are
 sampling *with replacement*.
