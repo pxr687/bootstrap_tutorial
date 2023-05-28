@@ -38,21 +38,18 @@ notebook of an older version of the [UC Berkeley data science course](https://in
 
 # The Fundamental Problem of Data Science
 
-Data science can be (very) roughly defined as the implementation of statistical
-analysis in code and algorithms.
-
-We could also very (roughlt) define data science as the science of drawing insights from data, 
+Data science can be (very) roughly defined as the science of drawing insights from data, 
 using code, under uncertainty.
 
 This uncertainty results from what I'll call "The Fundamental Problem" of data science:
 
 > *What we care about are populations, but all we (usually!) have access to are samples.*
 
-More spcecifically: we care about populations and parameters but all we have access to are samples and statistics.
-
 * Population - all the things (people, cars, rivers, planets) that we could measure a variable of interest for
 
 * Sample - a subset of a population
+
+More specifically: we care about populations and parameters but all we have access to are samples and statistics.
 
 The problem we face with samples - even if they are randomly collected - is *sampling error*.
 
@@ -142,11 +139,6 @@ sf2015 = pd.read_csv('san_francisco_2015.csv')
 sf2015.head()
 ```
 
-```{python}
-# show the columns that the data contains
-list(sf2015.columns)
-```
-
 There is one row for each of 42,979 employees. There are numerous columns
 containing information about City departmental affiliation and details of the
 different parts of the employee's compensation package. Here is the row
@@ -161,16 +153,6 @@ sf2015[sf2015['Job'] == 'Mayor']
 We are going to study the final column, `Total Compensation`. That's the
 employee's salary plus the City's contribution towards his/her retirement and
 benefit plans.
-
-Financial packages in a calendar year can sometimes be hard to understand as
-they depend on the date of hire, whether the employee is changing jobs within
-the City, and so on. For example, the lowest values in the `Total Compensation`
-column look a little strange.
-
-```{python}
-# sort the data by Total Compensation, and show the first 10 rows
-sf2015.sort_values('Total Compensation').head(10)
-```
 
 For clarity of comparison, we will focus our attention on those who had at
 least the equivalent of a half-time job for the whole year. At a minimum wage
