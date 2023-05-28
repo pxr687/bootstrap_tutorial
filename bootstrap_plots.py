@@ -43,6 +43,7 @@ def add_x_labels_total_compensation():
     plt.xticks(rotation = 60)
 
 def plot_our_sample(our_sample, sf_bins):
+    """Plot a single sample from the sf2015 data."""
     our_sample.plot.hist(bins=sf_bins, color = 'red', label = "Sample")
 
     # show the sample median
