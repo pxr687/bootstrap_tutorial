@@ -67,44 +67,15 @@ This scenario illustrates what I will call "The Fundamental Problem" of data sci
 More specifically: we care about populations and parameters but all we have access to are samples and statistics.
 
 The problem we face with samples - even if they are randomly collected - is *sampling error* - on average, there will be some deviation of a sample statistic from the true population parameter.
-<!-- #endregion -->
-
-```{python}
-# a simulated population
-population = population_plot(population_size = 10000)
-```
-
-The code cell below randomly draws a sample from the population we created just now,
-and shows it alongside the population data:
-
-```{python}
-# draw a random sample from the population data
-population_plot_with_sample(population, sample_size = 15)
-```
-
-However, even if our sample is perfectly random, some proportion of the time
-we are going to end up with samples that badly estimate the population parameter:
-
-```{python}
-# draw an unrepresentative sample from the data
-population_plot_with_unrepresentative_sample(population, sample_size = 15)
-```
-
-# The Bootstrap
-
-What can we do about the problem outlined above? - we have one sample, and we need to get an idea of how well it estimates a parameter, but we are stuck with only the sample we have. Ideally, we would draw many more random samples from the population, but in real life, with real data, this is generally not possible.
-
-Fortunately, a brilliant idea called the bootstrap can help out here. The bootstrap let's us simulate drawing new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*.
-
-*This may seem like a sleight of hand, but hopefully I can convince you it works!*
-
-We will now see how and why the bootstrap works. 
-
-## Employee Compensation in the City of San Francisco
-
 
 We're going to use a real dataset now which puts us in the rare situation of
 being able to view a entire population of datapoints.
+
+This will allow us to view sampling error in real time: by drawing a random sample and comparing it to a known population parameter, to see how far off the sample estimate is.
+<!-- #endregion -->
+
+## Employee Compensation in the City of San Francisco
+
 
 [SF OpenData](https://data.sfgov.org) is a website where the City and County of
 San Francisco make some of their data publicly available. One of the data sets
@@ -112,17 +83,22 @@ contains compensation data for employees of the City. These include medical
 professionals at City-run hospitals, police officers, fire fighters,
 transportation workers, elected officials, and all other employees of the City.
 
-Compensation data for the calendar year 2015 are in the table `sf2015`.
+Compensation data for the calendar year 2015 are in the table `sf2015` below, for
+all employees earning \\\$10,000 or more (equivalent to one year at half time hours).
 
 ```{python}
 # load in the data
 sf2015 = pd.read_csv('san_francisco_2015.csv')
 
+# trim the dataframe to employees earning over $10,000 per year (equivalent to
+# one year at half time hours)
+sf2015 = sf2015[sf2015['Salaries'] > 10000]
+
 # show the first few rows
 sf2015.head()
 ```
 
-There is one row for each of 42,979 employees. There are numerous columns
+There is one row for each of 36,569 employees. There are numerous columns
 containing information about City departmental affiliation and details of the
 different parts of the employee's compensation package. Here is the row
 corresponding to the late [Mayor Ed
@@ -137,29 +113,12 @@ We are going to study the final column, `Total Compensation`. That's the
 employee's salary plus the City's contribution towards his/her retirement and
 benefit plans.
 
-For clarity of comparison, we will focus our attention on those who had at
-least the equivalent of a half-time job for the whole year. At a minimum wage
-of about \\\$10 per hour, and 20 hours per week for 52 weeks, that's a salary of
-about \\\$10,000.
-
-```{python}
-# trim the dataframe to employees earning over $10,000 per year
-sf2015 = sf2015[sf2015['Salaries'] > 10000]
-
-# show the first few rows of the trimmed data
-sf2015.head()
-```
-
-```{python}
-# show how many employees are in the trimmed data
-len(sf2015)
-```
-
 ## Population and Parameter
 
 
-Let this table of just over 36,500 rows be our population. Here is a histogram
-of the total compensations.
+The 36,500 rows of the table abouve are our population. Here is a histogram
+of the total compensations, along with the population parameter we are interested in:
+the median total compensation.
 
 ```{python}
 # set the bins for the histogram (this will allow us to see a bit more of the
@@ -167,13 +126,8 @@ of the total compensations.
 sf_bins = np.arange(0, 700000, 25000)
 
 # plot the histogram
-sf2015['Total Compensation'].plot.hist(bins=sf_bins)
-
-# add axis labels
-plt.xlabel('Total Compensation')
-
-# rotate the x-axis labels, for clarity
-plt.xticks(rotation = 60);
+# plot the population data and show the median
+population_plot_sf_data(sf2015, bins = sf_bins);
 ```
 
 This is fairly typical for an income distribution - a lot of people have a little, a lot of people have some and a very small number of people have a lot...
@@ -187,8 +141,6 @@ example, the total compensation of the Chief Investment Officer was almost
 sf2015.sort_values('Total Compensation', ascending=False)[['Job', 'Total Compensation']].head()
 ```
 
-Now let the parameter be the median of the total compensations.
-
 Since we have the luxury of having all of the data from the population, we can
 simply calculate the parameter:
 
@@ -201,11 +153,6 @@ pop_median = np.median(compensation)
 
 # show the population median
 print(f"The population median = {pop_median}")
-```
-
-```{python}
-# plot the population data and show the median
-population_plot_sf_data(sf2015, bins = sf_bins);
 ```
 
 The median total compensation of all employees was just over \$110,300.
@@ -222,33 +169,32 @@ parameter is unknown. For now, we are all-knowing.
 ## A Random Sample and an Estimate
 
 
-To illustrate the effect of sampling error that we saw earlier us draw a sample of employees
-at random without replacement, and let the median total compensation of the sampled employees
-serve as our estimate of the parameter.
+We can now simulate the situation we are typically in when we do data science: we will draw a sample of employees
+at random without replacement, and let the median total compensation of the sampled employees serve as our estimate of the parameter.
 
 ```{python}
 # draw a random sample, without replacement, from the population data
 population_plot_sf_data_with_sample(sf2015, bins = sf_bins, sample_size = 15) 
 ```
 
-If the sample size is large, then by the law of averages, the distribution of the
-sample resembles that of the population, and consequently each sample median is
-unlikely to be very far from the population median (though of course it is not likely to 
-be exactly the same).
+# The Bootstrap
 
-The situation were are typical in this: we have one sample giving us one estimate of a population parameter. But had the sample come out differently, the estimate would have had a different value. We would like to be
+The situation were are typically in this: we have one sample giving us one estimate of a population parameter. But had the sample come out differently, the estimate would have had a different value. We would like to be
 able to quantify the amount by which the estimate could vary across samples.
 That measure of variability will help us measure how accurately we can estimate
 the parameter.
 
-In the present situation - with access to an entire population's worth of data! - to see how different the estimate would be if the sample had come out differently, we could just draw another sample from the population, but that
-would be cheating. We are trying to mimic real life, where typically we won't have all the population data at hand.
+In the present situation - with access to an entire population's worth of data! - to see how different the estimate would be if the sample had come out differently, we can just draw another sample from the population, but that
+is cheating. In real life typically we won't have all the population data at hand.
 
 Somehow, we have to get another random sample without sampling from the
 population.
 
-The code cell below is going to simulate the typical situation we will be when doing data science:
-we have one sample, and must estimate population parameters using this one sample...
+Fortunately, a brilliant idea called the bootstrap can help out here. The bootstrap let's us simulate drawing new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*.
+
+*This may seem like a sleight of hand, but hopefully I can convince you it works!*
+
+We will now see how and why the bootstrap works. 
 
 ```{python}
 # draw a sample of size 500 from the compensation Series, without replacement.
