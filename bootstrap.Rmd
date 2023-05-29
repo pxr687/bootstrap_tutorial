@@ -126,9 +126,8 @@ Here is a histogram of the total compensations, along with the population parame
 # complexity of the distribution)
 sf_bins = np.arange(0, 700000, 25000)
 
-# plot the histogram
 # plot the population data and show the median
-population_plot_sf_data(sf2015, bins = sf_bins);
+population_plot_sf_data(sf2015, bins = 100);
 ```
 
 This is fairly typical for an income distribution - a lot of people have a little, a lot of people have some and a very small number of people have a lot...
@@ -349,6 +348,10 @@ bstrap_medians = bootstrap_median(our_sample, 5000)
 bstrap_medians
 ```
 
+```{python}
+len(bstrap_medians)
+```
+
 Here is the histogram of the 5000 medians. The blue line is the population
 parameter: it is the median of the entire population, which we happen to know
 but did not use in the bootstrap process.
@@ -480,7 +483,7 @@ intervals['Left'] = left_ends
 intervals['Right'] = right_ends
 ```
 
-For each of the 25 replications, we get one (left, right) interval of
+For each of the 20 replications, we get one (left, right) interval of
 estimates of the median.
 
 ```{python}
