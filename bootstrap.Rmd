@@ -48,6 +48,12 @@ notebook of an older version of the [UC Berkeley data science course](https://in
 
 [Terminology in this section needs to be made explicit]
 
+[Set up baby dataset - maybe a scenario of data loss - population data has been lost but a sample of X babies had been randomly selected for data quality checks - this is the only remaining data]
+
+[Data scientist is working on a biomedical research project estimating baby birthweights...]
+
+[Make a "field plot" showing 
+
 A data scientist is using the data in a random sample to estimate an unknown population parameter. She uses the sample to calculate the value of a statistic that she will use as her estimate.
 
 Once she has calculated the observed value of her statistic, she could just present it as her estimate and go on her merry way. But she’s a data scientist. She knows that her random sample is just one of numerous possible random samples, and thus her estimate is just one of numerous plausible estimates.
@@ -78,49 +84,47 @@ being able to view a entire population of datapoints.
 This will allow us to view sampling error in real time: by drawing a random sample and comparing it to a known population parameter, to see how far off the sample estimate is.
 <!-- #endregion -->
 
-## Employee Compensation in the City of San Francisco
+# A data science predicament
 
+Consider this scenario: a data scientist has been asked to help with a research project in the field of historical epidemiology - analysing historical datasets related to health. 
 
-[SF OpenData](https://data.sfgov.org) is a website where the City and County of
-San Francisco make some of their data publicly available. One of the data sets
-contains compensation data for employees of the City. These include medical
-professionals at City-run hospitals, police officers, fire fighters,
-transportation workers, elected officials, and all other employees of the City.
+Her task is to estimate the birthweights of babies born at a small hospital in Oakland, CA in the year 1960. She is to do this in order to later test the hypothesis that babies born at this hospital in this year were underweight, relative to the national average at that time.
 
-Compensation data for the calendar year 2015 are in the table `sf2015` below, for
-all employees earning \\\$10,000 or more (equivalent to one year at half time hours).
-The `Total Compensation` column shows employee's salary plus the City's contribution
-towards his/her retirement and benefit plans.
+However, the data scientist is in a predicament. At the start of the project a random sample of 50 records were given to her whilst she waited for clearance from the hospital medical records department to be granted access to the full dataset, which contains the birthweights for all 1236 babies born in 1960. 
+
+But disaster has struck, and the hospitals medical records department has lost the full dataset in the meantime. (Research rarely goes to plan!).
+
+At the moment, she only has her sample of 50 babies, which is shown the output of the code cell below:
 
 ```{python}
-# load in the data
-babies = pd.read_csv('babiesI.data', sep='\s+')
+# load in the data (this is real data!)
+babies = pd.read_csv('babies.csv').sample(50)
 
-babies = babies.rename(columns = {'bwt': 'birthweight'})
-
-# show the first few rows
-babies.head(20)
+# show the data
+babies
 ```
 
 ```{python}
-plt.hist(babies['birthweight'])
-```
+# calculate the sample mean
+sample_mean = babies['birthweight_kg'].mean()
 
-There is one row for each of 36,569 employees. 
+# show the sample mean
+sample_mean
+```
 
 ```{python}
-# how many employees in the population?
-len(sf2015)
+# plot the sample, and its mean
+plt.hist(babies['birthweight_kg'], color = 'red')
+plt.axvline(sample_mean, color = 'darkred', label = f"Sample Mean (= {round(sample_mean)})")
+plt.xlabel('Birthweight (kg)')
+plt.legend();
 ```
 
-Here is the row
-corresponding to the late [Mayor Ed
-Lee](https://en.wikipedia.org/wiki/Ed_Lee_(politician))
+So at the moment our data scientist is stuck with a random sample of 50 birthweights. But she doesn't care specifically about this sample...she cares about the *population* of all babies born in 1960 at this particular hospital. 
 
-```{python}
-# get the row(s) corresponding to a specific job role
-sf2015[sf2015['Job'] == 'Mayor']
-```
+"Population" here is being used in the technical statistical sense - all of the 'observational units' (in this case babies) which are of interest for a particular research question. 
+
+She cares about the average birthweight of **all of the 1236 babies born in 1960, not just her random sample of 50 of them**.
 
 ## Population and Parameter
 
