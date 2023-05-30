@@ -46,8 +46,6 @@ notebook of an older version of the [UC Berkeley data science course](https://in
 
 # The Fundamental Problem of Data Science
 
-[Terminology in this section needs to be made explicit]
-
 A data scientist is using the data in a random sample to estimate an unknown population parameter. She uses the sample to calculate the value of a statistic that she will use as her estimate.
 
 Once she has calculated the observed value of her statistic, she could just present it as her estimate and go on her merry way. But she’s a data scientist. She knows that her random sample is just one of numerous possible random samples, and thus her estimate is just one of numerous plausible estimates.
@@ -94,16 +92,10 @@ towards his/her retirement and benefit plans.
 
 ```{python}
 # load in the data
-babies = pd.read_csv('babiesI.data', sep='\s+')
-
-babies = babies.rename(columns = {'bwt': 'birthweight'})
+sf2015 = pd.read_csv('san_francisco_2015.csv')
 
 # show the first few rows
-babies.head(20)
-```
-
-```{python}
-plt.hist(babies['birthweight'])
+sf2015.head(20)
 ```
 
 There is one row for each of 36,569 employees. 

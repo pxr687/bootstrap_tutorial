@@ -1,0 +1,34 @@
+https://github.com/data-8/textbook/blob/64b20f0452a31545d9fbc8f34a9e86035cd56e45/notebooks/AB.ipynb
+
+
+https://github.com/data-8/textbook/blob/64b20f0452a31545d9fbc8f34a9e86035cd56e45/notebooks/baby.csv
+
+
+pd.read_csv('babiesI.data', sep='\s+')
+
+
+https://www.practicaldatascience.org/html/exercises/Exercise_statsmodels.html
+
+
+One of the first studies that addressed the issue of pregnancy and smoking was the Child Health and Development Studies, a comprehensive study of all babies born between 1960 and 1967 at the Kaiser Foundation Hospital in Oakland, CA. The original reference for the study is Yerushalmy (1964, American Journal of Obstetrics and Gynecology, pp. 505-518). The data and a summary of the study are in Nolan and Speed (2000, Stat Labs, Chapter 10) and can be found at the book’s website.
+
+
+Switch round the population reveal - drawing the sample first, explain
+that what we're trying to estimate, then reveal that in this case we 
+do have the population data. 
+
+Maybe uses minister's math example - I have last years grade but need to 
+work out if this grades are higher or lower, can't mark in time 
+
+
+Frame what we're looking for as "plus or minus a a bit" - how do we work out
+what that "a bit" is.
+
+"Bootstrap sample from the sample"
+
+Maybe show problem of resampling WITHOUT replacement - we're going to 
+get the same sample! 
+
+Alternatively: start off with sample 
+
+Definitely
