@@ -98,10 +98,10 @@ At the moment, she only has her sample of 50 babies, which is shown the output o
 
 ```{python}
 # load in the data (this is real data!)
-babies = pd.read_csv('babies.csv').sample(50)
+babies_sample = pd.read_csv('babies_sample.csv')
 
 # show the data
-babies
+babies_sample
 ```
 
 ```{python}
@@ -124,22 +124,40 @@ So at the moment our data scientist is stuck with a random sample of 50 birthwei
 
 "Population" here is being used in the technical statistical sense - all of the 'observational units' (in this case babies) which are of interest for a particular research question. 
 
+A sample is a small subset of a populaton. A random sample is sample where each observation in the sample had an equal probability of being selected (e.g. there was no bias towards particular observations making it into the sample).
+
 She cares about the average birthweight of **all of the 1236 babies born in 1960, not just her random sample of 50 of them**.
+
+The data scientist faces what I will call *The Fundamental Problem of Data Science":
+
+> We care about populations, but all we (usually!) have access to are samples.
+
+Samples can be misleading. They don't contain all of the information that the population does. So how can she use her sample to work out the average birthweight in the population?
+
+A sample might be misleading in the following way [field plot of worst case scenario]
+
+
+If the sample is random, it is less/unlikely to be *severely* biased and unrepresentative.
+
+But its unlikely to have exactly the same average as the population average.
+
+[Set up 'plus or minus a bit']
+
+[The is uncertainty in her estimate - the 'plus or minus a bit']
+
+[She's a data scientist, and would like to quantify this uncertainty.]
+
+[How does she work out what 'plus or minus a bit' is, in this case?]
 
 ## Population and Parameter
 
-The 36,500 rows of the table above are our population. Let the population parameter
-we are interested in be the the median `Total Compensation`.
-
-Here is a histogram of the total compensations, along with the population parameter of interest:
+[However, unbeknownst to our data scientist a researcher at a local university has previously requested the full dataset, and still has access to it!]
 
 ```{python}
-# set the bins for the histogram (this will allow us to see a bit more of the
-# complexity of the distribution)
-sf_bins = np.arange(0, 700000, 25000)
+# load in the population dataset
+babies = pd.read_csv('babies.csv')
 
-# plot the population data and show the median
-population_plot_sf_data(sf2015, bins = 100);
+babies
 ```
 
 This is fairly typical for an income distribution - a lot of people have a little, a lot of people have some and a very small number of people have a lot...
