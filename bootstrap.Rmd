@@ -39,7 +39,7 @@ plt.style.use('fivethirtyeight')
 
 ## Confidence Intervals
 
-- We will look at confidence intervals via a modern code-based method of generating confidence intervals, called the bootsrap
+- We will look at confidence intervals via a modern code-based method of generating them, called the bootsrap
 
 - (I hope you'll agree!) this approach promotes a deep understanding of the meaning of confidence intervals 
 
@@ -56,7 +56,7 @@ Her task is to estimate the birthweights of babies born at a small hospital in O
 
 However, the data scientist is in a predicament.  Initially, she was granted access to a random sample of 25 baby records whilst waiting for clearance from the hospital's medical records department to access the complete dataset. The complete dataset includes the birthweights for all 1236 babies born at that hospital in 1960.
 
-But disaster has struck, and the hospital's medical records department has been subject to a ransomware attack, and so the full dataset is inaccessible, for a indeterminate period time. (Alas, research rarely goes to plan!).
+But disaster has struck, and the hospital's medical records department has been subject to a ransomware attack, and so the full dataset is inaccessible, for a indeterminate period of time. (Alas, research rarely goes to plan!).
 
 At the moment, she only has her random sample of 25 babies, which is shown the output of the code cell below:
 
@@ -68,7 +68,7 @@ babies_sample = pd.read_csv('babies_sample.csv')
 babies_sample
 ```
 
-Because our data scientist is interested in the average birthweight, so she calculates this from her sample:
+Because our data scientist is interested in the average (mean) birthweight, so she calculates this from her sample:
 
 ```{python}
 # calculate the sample mean
@@ -78,7 +78,7 @@ sample_mean = babies_sample['birthweight_kg'].mean()
 sample_mean
 ```
 
-She also plots the sample birthweights, to see how they are distributed:
+She also plots the sample birthweights, to see how they are distributed, relative to the sample average:
 
 ```{python}
 # plot the sample, and its mean
@@ -90,15 +90,13 @@ plt.legend(bbox_to_anchor = (1,1));
 ```
 
 <!-- #region -->
-## The Fundamental Problem of Data Science
-
-As it stands, because the full dataset is inaccessible due to the ransomware attack, our data scientist is stuck with a random sample of 25 birthweights. However, she doesn't care specifically about this random sample of 25 babies; *she cares about the population of all 1236 babies born in 1960 at this particular hospital*. 
+As it stands, because the full dataset is inaccessible due to the ransomware attack, our data scientist is stuck with her random sample of 25 birthweights. However, she doesn't care specifically about this random sample of 25 babies; *she cares about the population of all 1236 babies born in 1960 at this particular hospital*. 
 
 Somehow she needs to use her sample and its average birthweight to accurately estimate the population's average birthweight.
 
-It's important to clarify the terminology used I've used her. In statistics and data science, "population" refers to all the observational units (in this case, babies) of interest for a specific research question. In this case, the population of interest is all 1236 babies born at the hospital in 1960.
+It's important to clarify the terminology used I've used here. In statistics and data science, "population" refers to all the observational units (in this case, babies) that are of interest for a specific research question. In this case, the population of interest is all 1236 babies born at the hospital in 1960.
 
-Conversely, a "sample" is a smaller subset of the population. A random sample is one where each observation in the sample had an equal probability of being selected, ensuring there is no bias towards specific observations.
+Conversely, a "sample" is a smaller subset of the population. A *random* sample is one where each observation in the sample had an equal probability of being selected, ensuring there is no bias towards specific observations. In this case, the sample being random means that each baby had an equal chance of being selected into the sample.
 
 ![](images/pop_sample_pic.png)
 
@@ -108,19 +106,11 @@ Our data scientist could simply take the average birthweight of her sample and r
 
 On a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would have been different. Consequently, when she uses the sample average as her estimate of the population birthweight, her estimate would have been different as well.
 
-Moreover, what if her particular sample of 25 babies is representative of all 1236 babies born at the hospital in 1960?
-
-Our data scientist's situation illustrates what I will refer to as *The Fundamental Problem of Data Science*:
-
-> "We care about populations, but all we (usually!) have access to are samples."
-
-Our data scientist is in a very typical research scenario: she has a (small) random sample, and she wants to use it to work something out about the larger, underlying population from which the sample came.
-
 ## An all-knowing perspective
 
-To further illustrate the Fundamental Problem of Data Science, I'd like you to imagine that WE (everyone present today) has access to the lost, full dataset. Let's imagine that there is a computer in the hospital which is not connected to the internet, and has survived the ransomware attack unscathed.
+To clarify our data scientist's concerns, I'd like you to imagine that WE (everyone present today) has access to the lost, full dataset. Let's imagine that there is a computer in the hospital which is not connected to the internet, and has survived the ransomware attack unscathed.
 
-But only WE know the password, and so only we can view the full dataset.
+But only WE know the password to this hallowed computer, and so only WE can view the full dataset.
 
 Here is the full dataset, containing the birthweights of all babies born in 1960 at the hospital:
 <!-- #endregion -->
@@ -156,6 +146,12 @@ population_mean = babies_pop["birthweight_kg"].mean().round(2)
 population_mean
 ```
 
+Remember I said earlier that our data scientist knows that her random sample could have ended up having different babies in it? And therefore the average birthweight in her sample would have been different, and that this introduces uncertainty when she tries to use her sample average as an estimate of the population average?
+
+Well, because we are in the seemingly all-knowing position of being able to "see" the whole population data, we can simulate the situation the data scientist is in by drawing a random sample of 25 babies from the population of 1236 babies. Only - because we have access to the population data - we can do this as many times as we like, so we can not only see how far off each sample average is from the actual population mean, we can also build an intuition as to how much sample averages vary as we draw lots of random samples.
+
+The code cell below draws a random sample from the population data:
+
 ```{python}
 # draw a new sample
 new_sample = babies_pop.sample(25)
@@ -164,6 +160,10 @@ new_sample = babies_pop.sample(25)
 display(Markdown(f"\nNew sample mean = {np.mean(new_sample).round(2)}"))
 display(new_sample.round(2))
 ```
+
+Let's draw another random sample, from our omniscient perspective, and let's plot it against the population data, so we can see graphically how close or far our sample average is from the population average.
+
+Through running this code cell multiple times, we can build an intuition for how much the sample averages vary, over repeated samples:
 
 ```{python}
 # draw a new random sample
@@ -190,27 +190,38 @@ plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population');
 ```
 
-[Something I like to call a "field plot" (just my name for it, not a technical term!). Imagine you're hovering in the sky, looking down on a field. In it are all the babies...]
+We can see that from each sample, sometimes we get good estimates of the population mean, sometimes we get bad estimates.
+
+Another way of showing this process is on which I like to call a "field plot" (just my name for it!). Imagine you're hovering in the sky, looking down on a field. In it are all the 1236 babies in the population are sitting in perfect lines (12 lines, with 103 babies in each). 
+
+The graph below on the left shows these lines (viewed from above) and in the location of each baby, the birthweight of that baby is displayed. The graph on the left shows all of the birthweights for all 1236 babies.
+
+The graph on the right shows a random sample of 25 of the baby birthweights (highlighted in red):
 
 ```{python}
+# this is a custom function, as the code to produce this plot is quite long...
 field_plot(babies_pop, fontsize = 8, figsize = (12,12))
 ```
 
-Our data scientist understands this principle.
+## Plus or minus a bit
 
-She knows her sample is just one of many possible samples, and that the average birthweight in her sample is just one of many average birthweights that she could have ended up with.
+So we have seen that sample averages do not always capture the population average.
 
-We have just seen, that as you draw repeated random samples, sometimes the sample average is very close to the population average. Sometimes it is quite far from the population average.
+Sometimes they are higher, sometimes they are lot lower.
 
-So when our data scientist is wondering whether her sample average is a good representation of the population average, she knows that the answer is "the population average is probably somewhere near my sample average, it'll be the sample average **plus or minus a bit**".
+Sometimes the deviation of the sample average from the population average.
+
+This phenomenon is called *sampling error* - sample averages tend to deviate from population averages, even when the sample is random.
+
+So when our data scientist is wondering whether her sample average is a good representation of the population average, she knows that the answer is "the population average is probably somewhere near my sample average, but because of sampling error it'll be the sample average **plus or minus a bit**".
 
 This "plus or minus a bit" means her sample average is an *uncertain* estimate of the population average.
 
-But how uncertain? How does she know how big "plus or minus a bit" might be? Our data scientist is not in the luxury, all knowing perspective we are currently in. We can simply draw new random samples to see how much, on average, their means vary.
+But how uncertain? How does she know how big "plus or minus a bit" might be? Our data scientist is not in the luxury, all knowing perspective we are currently in. We can simply draw new random samples to see how much, on average, their means vary. We can also "peek" at the true population mean.
 
-Our data scientist cannot simply draw new random samples from the population - because she doesn't have access to the full dataset. 
+Our data scientist cannot simply draw new random samples from the population, nor can she "see" the true population mean - because she doesn't have access to the full dataset. 
 
-She is stuck with the sample she has. So how can she work out how big "plus or minus a bit" might be?
+She is stuck with the sample she has. So how can she work out how much uncertainty is in her estimate of the population mean - how can she work out how big "plus or minus a bit" might be?
 
 # The Bootstrap
 
