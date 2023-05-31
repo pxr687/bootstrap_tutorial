@@ -26,11 +26,18 @@ pd.set_option('mode.chained_assignment', 'raise')
 # %matplotlib inline
 import matplotlib.pyplot as plt
 
+from population_sample_image_generator import *
+# just some random coordinates, used in a later plot
+x_coord, y_coord = np.meshgrid(np.arange(0, 1, 1/1236), np.arange(0, 1, 1/1236))
+x_coord, y_coord = x_coord.flatten(), y_coord.flatten() 
+random_coord_indexes = np.random.choice(len(x_coord), 1236, replace = False)
+x_coord, y_coord = x_coord[random_coord_indexes], y_coord[random_coord_indexes]
+
 # Make the plots look more fancy.
 plt.style.use('fivethirtyeight')
 ```
 
-# Confidence Intervals
+## Confidence Intervals
 
 - We will look at confidence intervals via a modern code-based method of generating confidence intervals, called the bootsrap
 
@@ -41,7 +48,7 @@ plt.style.use('fivethirtyeight')
 *Note*: This page has content from the [Bootstrap](https://github.com/data-8/textbook/blob/64b20f0/notebooks/Bootstrap.ipynb)
 notebook of an older version of the [UC Berkeley data science course](https://inferentialthinking.com/). See the Berkeley course section of the [license file](https://uob-ds.github.io/cfd2021/license).
 
-# A data scientist's predicament
+## A data scientist's predicament
 
 Consider this scenario: a data scientist has been asked to help with a research project in the field of historical epidemiology - analysing historical datasets related to health. 
 
@@ -49,21 +56,19 @@ Her task is to estimate the birthweights of babies born at a small hospital in O
 
 However, the data scientist is in a predicament.  Initially, she was granted access to a random sample of 25 baby records whilst waiting for clearance from the hospital's medical records department to access the complete dataset. The complete dataset includes the birthweights for all 1236 babies born at that hospital in 1960.
 
-*NB*: "random" here means that each baby's record had an equal chance of making it into the sample, it was not biased towards specific babies being in the sample.
-
-But disaster has struck, and the hospital's medical records department has lost the full dataset in the meantime. (Research rarely goes to plan!).
+But disaster has struck, and the hospital's medical records department has been subject to a ransomware attack, and so the full dataset is inaccessible, for a indeterminate period time. (Alas, research rarely goes to plan!).
 
 At the moment, she only has her random sample of 25 babies, which is shown the output of the code cell below:
 
 ```{python}
-# load in the data (this is real data!)
+# load in the data (this IS real data!)
 babies_sample = pd.read_csv('babies_sample.csv')
 
 # show the data
 babies_sample
 ```
 
-Our data scientist is interested in the average birthweight, so she calculates this from her sample:
+Because our data scientist is interested in the average birthweight, so she calculates this from her sample:
 
 ```{python}
 # calculate the sample mean
@@ -85,27 +90,39 @@ plt.legend(bbox_to_anchor = (1,1));
 ```
 
 <!-- #region -->
-So at the moment - because the hospital has lost the full dataset - our data scientist is stuck with a random sample of 25 birthweights. But she doesn't care *specifically* about this random sample of 50 babies...she cares about the *population* of all 1236 babies born in 1960 at this particular hospital. 
+## The Fundamental Problem of Data Science
 
-"Population" here is being used in the technical statistical sense - it refers to all of the 'observational units' (in this case babies) which are of interest for a particular research question. In this case the population she is interested in is *all* of the 1236 babies born at the hospital in 1960.
+As it stands, because the full dataset is inaccessible due to the ransomware attack, our data scientist is stuck with a random sample of 25 birthweights. However, she doesn't care specifically about this random sample of 25 babies; *she cares about the population of all 1236 babies born in 1960 at this particular hospital*. 
 
-A sample is a small subset of a populaton. A random sample is sample where each observation in the sample had an equal probability of being selected (e.g. there was no bias towards particular observations making it into the sample).
+Somehow she needs to use her sample and its average birthweight to accurately estimate the population's average birthweight.
 
-What if her sample of 25 babies is unrepresenative of all 1236 babies born in 1960?
+It's important to clarify the terminology used I've used her. In statistics and data science, "population" refers to all the observational units (in this case, babies) of interest for a specific research question. In this case, the population of interest is all 1236 babies born at the hospital in 1960.
 
-The data scientist faces what I will call *The Fundamental Problem of Data Science*:
+Conversely, a "sample" is a smaller subset of the population. A random sample is one where each observation in the sample had an equal probability of being selected, ensuring there is no bias towards specific observations.
 
-> We care about populations, but all we (usually!) have access to are samples.
+![](images/pop_sample_pic.png)
 
-Our data scientist could just take the average birthweight of her sample, and report to the rest of her research team that this is probably what the population birthweight was, and then go on her merry way. 
+(image from: https://statsandr.com/blog/what-is-the-difference-between-population-and-sample/)
 
-But she’s a data scientist. She knows that her random sample is just one of numerous possible random samples. On a different day, different records would have made it into her random sample, and the sample would have had a different average birthweight, and therefore her estimate of what the population birthweight is would have been different...
+Our data scientist could simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. 
 
-# An all-knowing perspective
+On a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would have been different. Consequently, when she uses the sample average as her estimate of the population birthweight, her estimate would have been different as well.
 
-[Set it as WE know the popuation value, but out data scientist doesn't]
+Moreover, what if her particular sample of 25 babies is representative of all 1236 babies born at the hospital in 1960?
 
-[So WE are in the luxury situation of just being able to look at the parameter]
+Our data scientist's situation illustrates what I will refer to as *The Fundamental Problem of Data Science*:
+
+> "We care about populations, but all we (usually!) have access to are samples."
+
+Our data scientist is in a very typical research scenario: she has a (small) random sample, and she wants to use it to work something out about the larger, underlying population from which the sample came.
+
+## An all-knowing perspective
+
+To further illustrate the Fundamental Problem of Data Science, I'd like you to imagine that WE (everyone present today) has access to the lost, full dataset. Let's imagine that there is a computer in the hospital which is not connected to the internet, and has survived the ransomware attack unscathed.
+
+But only WE know the password, and so only we can view the full dataset.
+
+Here is the full dataset, containing the birthweights of all babies born in 1960 at the hospital:
 <!-- #endregion -->
 
 ```{python}
@@ -113,6 +130,8 @@ babies_pop = pd.read_csv('babies.csv')
 
 babies_pop
 ```
+
+We are almost never in this situation in research - of being able to access the full population data - and so, from our luxury, all-knowing viewpoint, we can just plot the population data, and "peek" at the population mean:
 
 ```{python}
 # plot a histogram, show the pop and pop mean
@@ -127,10 +146,13 @@ plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population');
 ```
 
+We can store the population mean as a python variable, to use later:
+
 ```{python}
 # store the population mean as a variable
 population_mean = babies_pop["birthweight_kg"].mean().round(2)
 
+# show the population mean
 population_mean
 ```
 
@@ -166,6 +188,12 @@ plt.axvline(sample.mean(), color = "red",
 plt.xlabel('Birthweight (kg)')
 plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population');
+```
+
+[Something I like to call a "field plot" (just my name for it, not a technical term!). Imagine you're hovering in the sky, looking down on a field. In it are all the babies...]
+
+```{python}
+field_plot(babies_pop, fontsize = 8, figsize = (12,10))
 ```
 
 Our data scientist understands this principle.
@@ -234,7 +262,7 @@ all the "resamples" are likely to resemble the original sample. So the
 distributions of all the resamples are likely to resemble the population as
 well.
 
-![](bootstrap_pic.png)
+![](images/bootstrap_pic.png)
 <!-- #endregion -->
 
 ## A Resampled mean
