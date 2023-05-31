@@ -16,22 +16,22 @@ jupyter:
 ---
 
 ```{python tags=c("hide-cell")}
-# Don't change this cell; just run it.
+# don't change this cell; just run it
 import numpy as np
 import pandas as pd
 from IPython.display import display, Markdown
 
-# Safe settings for Pandas.
+# safe settings for Pandas
 pd.set_option('mode.chained_assignment', 'raise')
 # %matplotlib inline
 import matplotlib.pyplot as plt
 from population_sample_image_generator import *
 
-# Make the plots look more fancy.
+# make the plots look more fancy
 plt.style.use('fivethirtyeight')
 ```
 
-## Confidence Intervals
+## Confidence intervals
 
 - We will look at confidence intervals via a modern code-based method of generating them, called the bootsrap
 
@@ -225,7 +225,7 @@ Currently, two things things are hidden from her:
 
 If she knew the population mean, she wouldn't have to infer anything from her sample. She could just report the population mean to the rest of her reserch team.
 
-But, even if she doesn't know the true population mean, if she knew the amount by which sample averages vary - over repeated random sampling of the sort we've just seen in the code cells above - she could use that information to construct an *interval* in which the population mean probably lies. This is a *confidence interval*.
+But, even if she doesn't know the true population mean, if she knew the amount by which sample averages vary - over repeated random sampling of the sort we've just seen in the code cells above - she could use that information to construct an *interval* in which the population mean probably lies. This is a *confidence interval*. [Link this to "plus or minus a bit"]
 
 She can't do draw new random samples from the population - but we from our luxury perspective can:
 
