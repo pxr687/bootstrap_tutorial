@@ -256,9 +256,15 @@ plt.xlabel('Mean Birthweight (kg)')
 plt.title(f'Distribution of Sample Means \n({number_of_samples} samples)');
 ```
 
-[Explain sampling distribution]
+Let's just recap what we've done here: because we have the population data, we've been able to draw repeated random samples from it.
 
-Now, if we take the "spread" of this sampling distribution:
+We've drawn 1000 random samples, and calculated the mean for each one.
+
+The purple histogram above shows the distribution of the means of these 1000 samples.
+
+This histogram can let us quantify the "plus or minus a bit" I mentioned earlier - it shows us how much sample averages tend to vary from each other.
+
+Now, if we take the "spread" of this sampling distribution, we can construct an interval which quantifies "plus or minus a bit":
 
 ```{python}
 left, right = np.percentile(sample_means, [2.5, 97.5])
@@ -278,16 +284,21 @@ plt.xlabel('Mean Birthweight (kg)')
 plt.title(f'Distribution of Sample Means \n({number_of_samples} samples)');
 ```
 
-[Get the width of the interval from our sampling distribution]
+Let's calculate how "wide" the interval is - that tells us precisely what "plus or minus a bit is", as it tells us how much the sample means typically vary from each other, as we draw lots of random samples:
 
 ```{python}
+# calculate the width of the interval
 width_of_interval = right - left
+
+# show the width of the interval
 width_of_interval 
 ```
 
+What can we do with this interval?
+
 The code cell below draws a new random sample and shows its mean.
 
-It uses the "spread" of the sampling distribution, which we just calculated, and "places" the spread as an interval around the new sample mean.
+It uses the "spread" of the sampling distribution - which we just calculated - and "places" the spread as an interval around the new sample mean.
 
 If we re-run the cell lots of times, we can see that a very high proportion of the time, the yellow interval contains the population mean:
 
@@ -318,7 +329,7 @@ plt.legend(bbox_to_anchor = (1, 1));
 
 You can see that the interval we obtained from the sampling distribution contains the population mean a big proportion of the time, even when the sample mean deviates from the population mean.
 
-[Cell below repeats the code from the cell above 100 times, and it shows the proportion of times that the interval contains the population mean, over 10000 repetitions]
+The cell below repeats the code from the cell above 100 times (apart from the graphs!), and it shows the proportion of times over all 1000 repeats that the interval around the sample mean contained the population mean.
 
 ```{python}
 # set the number of repeats
@@ -358,7 +369,7 @@ We've just seen that - even if we don't know the true population mean - if we ca
 
 But typically we - and our data scientist! - cannot simply draw more random samples from the population. We're limited to the one sample we have.
 
-Somehow, she has to get another random sample without being able to draw a new sample from the population.
+Somehow, she has to get lots of new random samples without being able to draw any new random samples from the population. This seems like an impossible situation.
 
 Fortunately, a brilliant idea called the bootstrap can help her out here. The bootstrap let's us simulate drawing new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*.
 
@@ -369,30 +380,35 @@ We will now see how and why the bootstrap works.
 ## The Bootstrap: Resampling from the Sample
 
 <!-- #region -->
-Here are the steps of *the bootstrap method* for generating another random
-sample that resembles the population:
+Here are the steps of *the bootstrap method* for simulating the process of drawing new random
+samples from the population:
 
 - **Treat the original sample as if it were the population.**
-- **Draw from the sample**, at random **with** replacement, **a sample which is the same size as the original sample size**.
+- **Draw from the sample -the same size as the original sample -**, at random **with** replacement.
 
-It is important to resample the same number of times as the original sample
-size. The reason is that the variability of an estimate depends on the size of
-the sample. Since our original sample consisted of 500 employees, our sample
-mean was based on 500 values. To see how different the sample could have
-been, we have to compare it to the mean of other samples of size 500.
+So let's just break that down: to get our new sample - I'll refer to this as a "bootstrap resample" - we select a baby at random from our original sample and record their birthweight. We then put that baby's record back in with the other records in the sample and then draw again at random. We do this until we have a new sample of 25 birthweights.
+
+It is important that the bootstrap resample is the same size as the original sample
+size. The reason is that the how much random sample means vary from each other depends on the size of
+the sample. 
+
+Since our original sample consisted of 25 babies, our sample
+mean was based on 25 babies. To see how different the sample could have
+been, we have to compare it to the mean of other samples of size 25.
 
 #### Why do we resample WITH replacement?
 
-If we drew 500 times at random *without* replacement from our sample of size
-500, we would just get the same sample back. By drawing *with* replacement, we
+If we drew 25 times at random *without* replacement from our sample of size
+25, we would just get the same sample back.
+
+By drawing *with* replacement, we
 create the possibility for the new samples to be different from the original,
 because some employees might be drawn more than once and others not at all.
 
-Why is this a good idea? By the law of averages, the distribution of the
-original sample is likely to resemble the population, and the distributions of
-all the "resamples" are likely to resemble the original sample. So the
-distributions of all the resamples are likely to resemble the population as
-well.
+Why is this a good idea? On average, if a sample is random, then the distribution of the
+sample is likely to resemble the distribution of the population. The distributions of all the "resamples" are likely to resemble the original sample. So the distributions of all the resamples are likely to resemble the population as well.
+
+You can remember this by the principle that **random samples tend to resemble the population...so random bootstrap resamples of the sample tend to resemble the population as well**.
 
 ![](images/bootstrap_pic.png)
 <!-- #endregion -->
@@ -400,10 +416,8 @@ well.
 ## A Resampled mean
 
 
-Our `compensation` values are stored in a pandas Series. We will use the `sample` method of a pandas Series to take the new sample with replacement.
-
-We want a sample the same size as the original sample (500), where we are
-sampling *with replacement*.
+To get a bootstrap resample, we want a sample the same size as the original sample (25 babies), where we are
+sampling *with replacement*. 
 
 Here is one new sample drawn from the original sample, with replacement, and
 the corresponding sample mean.
@@ -422,27 +436,21 @@ plt.title('Bootstrap Resample')
 plt.legend(bbox_to_anchor = (1,1));
 ```
 
-By resampling, we have something like another estimate of the population
-mean. By resampling again and again, we will get many such estimates, and
-hence an empirical distribution of the estimates.  We can call this
-distribution a *sampling distribution* of the mean - it is the distribution
-of the mean values we get from taking many samples.  Our samples are
-*bootstrap* samples, so this is the *bootstrap sampling distribution of the
-mean*.
+By resampling, we have something like a new sample mean with which estimate of the population
+mean. By resampling again and again, we will get many such new sample means, and
+hence an distribution of sample means. 
+
+This tells us how much sample means are likely to vary from each other as we draw repeated new random samples. **But** this time we don't use the population data - our rare and luxury perspective - in order to generate this distribution of sample means.
 
 ## Bootstrap Empirical Distribution of the Sample mean
 
 
 Let us define a function `bootstrap_mean` that takes our original sample,
 and the number of bootstrap samples we want to take, and returns an array of
-the corresponding resampled means.
-
-Each time we resample and find the mean, we *replicate* the bootstrap
-process. So the number of bootstrap samples will be called the number of
-replications.
+the corresponding bootstrap resample means.
 
 ```{python}
-def bootstrap_mean(original_sample, replications):
+def bootstrap_mean(original_sample, number_of_bootstrap_resamples):
     """Return array of bootstrapped sample means
 
     Parameters
@@ -462,11 +470,11 @@ def bootstrap_mean(original_sample, replications):
     
     # create an empty array to store the estimate of the means
     # over repeated resamples
-    means = np.zeros(replications)
+    means = np.zeros(number_of_bootstrap_resamples)
 
     # repeat the resampling procedure, and store the estimate of
     # the mean each time
-    for i in np.arange(replications):
+    for i in np.arange(number_of_bootstrap_resamples):
         bootstrap_sample = original_sample.sample(n, replace=True)
         means[i] = np.mean(bootstrap_sample)
         
@@ -474,25 +482,32 @@ def bootstrap_mean(original_sample, replications):
     return means
 ```
 
-We now replicate the bootstrap process 5,000 times. The array `bstrap_means`
-contains the means of all 5,000 bootstrap samples. Notice that the code
+We now repeat the bootstrap process 1000 times. The array `bstrap_means`
+contains the means of all 1000 bootstrap samples. Notice that the code
 takes longer to run than our previous code. It has a lot of resampling to do!
 
 ```{python}
+# set the number of bootstrap resamples we want to generate
+number_of_bootstrap_resamples = 1000
+
 # run our function, to generate an array containing the bootstrapped means
-bstrap_means = bootstrap_mean(babies_sample['birthweight_kg'], 5000)
+bstrap_means = bootstrap_mean(babies_sample['birthweight_kg'], number_of_bootstrap_resamples)
 
 # show the array
 bstrap_means
 ```
 
+After running this function, we now have the we have the means from 1000 simulated samples.
+
+**But we've gotten them all from our original random sample of 25 babies - we haven't touched the population data.**
+
 ```{python}
+# show that we have the means from 1000 simulated samples
 len(bstrap_means)
 ```
 
-Here is the histogram of the 5000 means. The blue line is the population
-parameter: it is the mean of the entire population, which we happen to know
-but did not use in the bootstrap process.
+Here is the histogram of the 1000 means from the bootstrap resamples. The blue line is the population
+mean, which we happen to know but did not use in the bootstrap process.
 
 ```{python}
 # a new dataframe for the means, obtained via resampling
@@ -506,32 +521,19 @@ resampled_means.plot.hist(color = 'purple')
 plt.axvline(population_mean,  color='blue', label = 'Population mean')
 
 # add title and labels to the plot
-plt.title('Bootstrap sampling distribution of the mean')
+plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resamples}) resamples')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
-It is important to remember that the blue line is fixed: it is \\\$110,305.79, the
-population mean. The empirical histogram is the result of random draws, and
-will be situated randomly relative to the blue line.
-
-Remember also that the point of all these computations is to estimate the
-population mean, which is the blue line. Our estimates are all the randomly
-generated sampled means whose histogram you see above. We want those
-estimates to contain the parameter – it they don't, then they are off.
+## Does the distribution of bootstrap sample means capture the population mean?
 
 
-## Do the Estimates Capture the Parameter?
-
-
-How often does the empirical histogram of the resampled means sit firmly over
+Does histogram of the resampled means sit firmly over
 the blue line, and not just brush the linewith its tails? To answer this, we must
 define "sit firmly". Let's take that to mean "the middle 95% of the resampled
 means contains the blue line".
 
 Here are the two ends of the "middle 95%" interval of resampled means:
-
-
-We can use unpacking in the usual way, to set our `left` and `right` variables:
 
 ```{python}
 left, right = np.percentile(bstrap_means, [2.5, 97.5])
@@ -539,25 +541,25 @@ print('Left:', left)
 print('Right:', right)
 ```
 
-The population mean of \$110,305 is between these two numbers, `left` and
-`right`. We show the interval and the population mean on the histogram below.
+Is the population mean of 3.39kg is between these two numbers, `left` and
+`right`? We show the interval and the population mean on the histogram below.
 
 ```{python}
+# show the boostrap resample distribution, its middle 95%, and the population mean
 resampled_means.plot.hist(color = 'purple')
 plt.axvline(population_mean,  color='blue', label = 'Population mean')
-plt.plot([left, right], [0, 0], color='yellow', lw=8, zorder=1,
-         label = "Interval containing 95% of the\nbootstrapped means");
+plt.plot([left, right], [5, 5], color='yellow', lw=8, zorder=1,
+         label = "Interval containing 95% of the\nbootstrapped means")
+plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resamples}) resamples')
+plt.legend(bbox_to_anchor = (1, 1));
 ```
-
-The "middle 95%" interval of estimates captured the parameter in our example.
-But was that a fluke?
 
 To see how frequently the interval contains the parameter, we have to run the
 entire process over and over again. Specifically, we will repeat the following
 process 100 times:
 
-* Draw an original sample of size 500 from the population.
-* Carry out 5,000 replications of the bootstrap process and generate the
+* Draw an original sample of size 25 from the population.
+* Carry out 1000 replications of the bootstrap process and generate the
   "middle 95%" interval of resampled means.
 
 As usual we start by doing one trial, where we take one sample, and generate
@@ -571,7 +573,7 @@ We can run this cell manually many times, below will we automate this process:
 this_sample = babies_sample['birthweight_kg'].sample(25, replace=True)
 
 # Get the bootstrap sampling distribution of the mean.
-these_means = pd.Series(bootstrap_mean(this_sample, 5000))
+these_means = pd.Series(bootstrap_mean(this_sample, number_of_bootstrap_resamples))
 
 these_means.plot.hist(color = 'purple', label = "Boostrap Sample means")
 plt.axvline(population_mean,  color='blue', label = 'Population mean')
@@ -611,7 +613,7 @@ for i in np.arange(n_intervals):
     this_sample = babies_sample['birthweight_kg'].sample(25, replace=True)
     
     # Get the bootstrap sampling distribution of the mean.
-    these_means = bootstrap_mean(this_sample, 5000)
+    these_means = bootstrap_mean(this_sample, number_of_bootstrap_resamples)
     
     # Calculate the left, right ends.
     left_end, right_end = np.percentile(these_means, [2.5, 97.5])
@@ -654,9 +656,7 @@ It takes a few minutes to construct all the intervals, but try it again if you
 have the patience. Most likely, about 95% intervals will be good
 ones: they will contain the parameter.
 
-It's hard to show you all the intervals on the horizontal axis as they have
-large overlaps – after all, they are all trying to estimate the same parameter.
-The graphic below shows each interval on the same axes by stacking them
+The graph below shows each interval on the same axes by stacking them
 vertically. The vertical axis is simply the number of the replication from
 which the interval was generated.
 
