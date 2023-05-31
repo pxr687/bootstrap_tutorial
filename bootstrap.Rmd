@@ -372,7 +372,7 @@ Fortunately, a brilliant idea called the bootstrap can help her out here. The bo
 
 We will now see how and why the bootstrap works. 
 
-## The Bootstrap: Resampling from the Sample
+## The Bootstrap: resampling from the sample
 
 <!-- #region -->
 Here are the steps of *the bootstrap method* for simulating the process of drawing new random
@@ -408,7 +408,7 @@ You can remember this by the principle that **random samples tend to resemble th
 ![](images/bootstrap_pic.png)
 <!-- #endregion -->
 
-## A Resampled mean
+## A resampled mean
 
 
 To get a bootstrap resample, we want a sample the same size as the original sample (25 babies), where we are
@@ -437,7 +437,7 @@ hence an distribution of sample means.
 
 This tells us how much sample means are likely to vary from each other as we draw repeated new random samples. **But** this time we don't use the population data - our rare and luxury perspective - in order to generate this distribution of sample means.
 
-## Bootstrap Empirical Distribution of the Sample mean
+## A distribution of means from bootstrap resamples
 
 
 Let us define a function `bootstrap_mean` that takes our original sample,
@@ -592,30 +592,31 @@ should be around 95. It may be in the low 90s or high 90s, but not much farther
 off 95 than that.
 
 ```{python}
-# THE BIG SIMULATION: This one can take several minutes.
+# THE BIG SIMULATION: this one can take a minute or two
 
-# Set up to make 20 left and right intervals
+# set up to make 20 left and right intervals
 n_intervals = 20
 left_ends = np.zeros(n_intervals)
 right_ends = np.zeros(n_intervals)
 
 for i in np.arange(n_intervals):
     
-    # One trial, generating a left and right interval.
-    # Take a new sample.
+    # one trial, generating a left and right interval
+    
+    # take a new sample.
     this_sample = babies_sample['birthweight_kg'].sample(25, replace=True)
     
-    # Get the bootstrap sampling distribution of the mean.
+    # get the distribution of bootstrap resample means
     these_means = bootstrap_mean(this_sample, number_of_bootstrap_resamples)
     
-    # Calculate the left, right ends.
+    # calculate the left, right ends
     left_end, right_end = np.percentile(these_means, [2.5, 97.5])
     
-    # Store the results for this trial.
+    # store the results for this trial
     left_ends[i] = left_end
     right_ends[i] = right_end
 
-# Put interval ends into own data frame.
+# put interval ends into own data frame.
 intervals = pd.DataFrame()
 intervals['Left'] = left_ends
 intervals['Right'] = right_ends
@@ -625,6 +626,11 @@ For each of the 20 replications, we get one (left, right) interval of
 estimates of the mean.
 
 ```{python}
+sample_mean
+```
+
+```{python}
+# show the sample interval
 intervals
 ```
 
