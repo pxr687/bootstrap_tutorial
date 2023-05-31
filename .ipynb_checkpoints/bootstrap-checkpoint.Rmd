@@ -128,13 +128,6 @@ plt.title('Population');
 ```
 
 ```{python}
-# store the population mean as a variable
-population_mean = babies_pop["birthweight_kg"].mean().round(2)
-
-population_mean
-```
-
-```{python}
 # draw a new sample
 new_sample = babies_pop.sample(25)
 
@@ -151,7 +144,7 @@ sample = babies_pop["birthweight_kg"].sample(25)
 plt.hist(babies_pop["birthweight_kg"], color = 'darkblue', 
          label = 'Population')
 plt.axvline(babies_pop["birthweight_kg"].mean(), 
-            label = f'Mean of Population = \n{population_mean}', 
+            label = f'Mean of Population = \n{babies_pop["birthweight_kg"].mean().round(2)}', 
             color = "blue")
 
 # show the new sample and new sample mean
@@ -343,11 +336,11 @@ resampled_means['Bootstrap Sample means'] = bstrap_means
 resampled_means.plot.hist(color = 'purple')
 
 # show the population mean
-plt.axvline(population_mean,  color='blue', label = 'Population mean')
+plt.axvline(pop_mean,  color='blue', label = 'Population mean')
 
 # add title and labels to the plot
 plt.title('Bootstrap sampling distribution of the mean')
-plt.legend(bbox_to_anchor = (1, 1));
+add_x_labels_total_compensation();
 ```
 
 It is important to remember that the blue line is fixed: it is \\\$110,305.79, the
@@ -384,9 +377,10 @@ The population mean of \$110,305 is between these two numbers, `left` and
 
 ```{python}
 resampled_means.plot.hist(color = 'purple')
-plt.axvline(population_mean,  color='blue', label = 'Population mean')
+plt.axvline(pop_mean,  color='blue', label = 'Population mean')
 plt.plot([left, right], [0, 0], color='yellow', lw=8, zorder=1,
-         label = "Interval containing 95% of the\nbootstrapped means");
+         label = "Interval containing 95% of the\nbootstrapped means")
+add_x_labels_total_compensation();
 ```
 
 The "middle 95%" interval of estimates captured the parameter in our example.
@@ -403,18 +397,15 @@ process 100 times:
 As usual we start by doing one trial, where we take one sample, and generate
 one left and one right interval.  This is the code we have been using above.
 
-We can run this cell manually many times, below will we automate this process:
-
 ```{python}
 # One trial, generating a left and right interval.
 # Take a new sample.
-this_sample = babies_sample['birthweight_kg'].sample(25, replace=True)
-
+this_sample = compensation.sample(500, replace=True)
 # Get the bootstrap sampling distribution of the mean.
 these_means = pd.Series(bootstrap_mean(this_sample, 5000))
 
 these_means.plot.hist(color = 'purple', label = "Boostrap Sample means")
-plt.axvline(population_mean,  color='blue', label = 'Population mean')
+plt.axvline(pop_mean,  color='blue', label = 'Population mean')
 
 # Calculate the left, right ends, and plot them.
 left_end, right_end = np.percentile(these_means, [2.5, 97.5])
@@ -422,6 +413,7 @@ plt.plot([left_end, right_end], [0, 0], color='yellow', lw=8, zorder=1,
          label = "Interval containing 95% of the\nbootstrapped means")
 
 # add plot labels
+add_x_labels_total_compensation()
 plt.show()
 
 # show the left and right end values
@@ -445,17 +437,13 @@ left_ends = np.zeros(n_intervals)
 right_ends = np.zeros(n_intervals)
 
 for i in np.arange(n_intervals):
-    
     # One trial, generating a left and right interval.
     # Take a new sample.
-    this_sample = babies_sample['birthweight_kg'].sample(25, replace=True)
-    
+    this_sample = compensation.sample(500, replace=True)
     # Get the bootstrap sampling distribution of the mean.
     these_means = bootstrap_mean(this_sample, 5000)
-    
     # Calculate the left, right ends.
     left_end, right_end = np.percentile(these_means, [2.5, 97.5])
-    
     # Store the results for this trial.
     left_ends[i] = left_end
     right_ends[i] = right_end
@@ -478,7 +466,7 @@ estimate. Typically the parameter is unknown, but in this section we happen to
 know what the parameter is.
 
 ```{python}
-population_mean
+pop_mean
 ```
 
 How many of the 20 intervals contain the population mean? That's the number
@@ -486,7 +474,7 @@ of intervals where the left end is below the population mean and the right
 end is above.
 
 ```{python}
-intervals["Contains Population mean"] = np.logical_and(left_ends < population_mean, right_ends > population_mean)
+intervals["Contains Population mean"] = np.logical_and(left_ends < pop_mean, right_ends > pop_mean)
 intervals
 ```
 
@@ -516,12 +504,13 @@ plt.figure(figsize=(8,8))
 for i in np.arange(len(intervals)):
     ends = intervals[['Left', 'Right']].iloc[i]
     plt.plot(ends, [i, i], color='gold')
-plt.axvline(population_mean,  color='blue', label = 'Population mean')
+plt.axvline(pop_mean,  color='blue', label = 'Population mean')
 plt.plot([], [], color = 'gold',
          label = "Intervals containing 95% of the\nbootstrapped means for a given replication")
 plt.ylabel('Replication Number')
 plt.yticks(np.arange(n_intervals))
-plt.title('Population mean and Intervals of Estimates');
+plt.title('Population mean and Intervals of Estimates')
+add_x_labels_total_compensation();
 ```
 
 To summarize what the simulation shows, suppose you are estimating the

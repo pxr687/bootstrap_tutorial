@@ -32,3 +32,45 @@ get the same sample!
 Alternatively: start off with sample 
 
 Definitely
+
+########################################################################
+# OLD STUFF
+
+# The Fundamental Problem of Data Science
+
+[Terminology in this section needs to be made explicit]
+
+[Set up baby dataset - maybe a scenario of data loss - population data has been lost but a sample of X babies had been randomly selected for data quality checks - this is the only remaining data]
+
+[Data scientist is working on a biomedical research project estimating baby birthweights...]
+
+[Make a "field plot" showing 
+
+A data scientist is using the data in a random sample to estimate an unknown population parameter. She uses the sample to calculate the value of a statistic that she will use as her estimate.
+
+Once she has calculated the observed value of her statistic, she could just present it as her estimate and go on her merry way. But she’s a data scientist. She knows that her random sample is just one of numerous possible random samples, and thus her estimate is just one of numerous plausible estimates.
+
+She wants to know: by how much could those estimates vary - e.g. *typically speaking, how wrong are the estimates produced by a sample of the size she took*? To answer this, it appears as though she needs to draw many other samples from the population, and compute a new estimates based on the each new sample. This would tell her how much estimates from a sample of the size she took tend to deviate from the population parameter.
+
+**This information would tell her how uncertain her estimate is**. She cannot get rid of the uncertainty, but she could quantify it.
+
+But she doesn’t have the resources to go back to the population and draw other samples.
+
+It looks as though the data scientist is stuck with the sample she has, and knows that it is uncertain whether her sample gives a *good* estimate of the underlying population parameter.
+
+This scenario illustrates what I will call "The Fundamental Problem" of data science:
+
+> *What we care about are populations, but all we (usually!) have access to are samples.*
+
+* Population - all the things (people, cars, rivers, planets) that we could measure a variable of interest for
+
+* Sample - a subset of a population
+
+More specifically: we care about populations and parameters but all we have access to are samples and statistics.
+
+The problem we face with samples - even if they are randomly collected - is *sampling error* - on average, there will be some deviation of a sample statistic from the true population parameter.
+
+For this tutorial, we're going to use a real dataset which puts us in the rare (and luxury!) situation of
+being able to view a entire population of datapoints.
+
+This will allow us to view sampling error in real time: by drawing a random sample and comparing it to a known population parameter, to see how far off the sample estimate is.
