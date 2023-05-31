@@ -219,21 +219,117 @@ This "plus or minus a bit" means her sample average is an *uncertain* estimate o
 
 But how uncertain? How does she know how big "plus or minus a bit" might be? Our data scientist is not in the luxury, all knowing perspective we are currently in. We can simply draw new random samples to see how much, on average, their means vary. We can also "peek" at the true population mean.
 
-Our data scientist cannot simply draw new random samples from the population, nor can she "see" the true population mean - because she doesn't have access to the full dataset. 
+Currently, two things things are hidden from her:
 
-She is stuck with the sample she has. So how can she work out how much uncertainty is in her estimate of the population mean - how can she work out how big "plus or minus a bit" might be?
+- The population mean itself
+
+- The amount by which sample averages of samples of 25 babies vary from each other
+
+If she knew the population mean, she wouldn't have to infer anything from her sample. She could just report the population mean to the rest of her reserch team.
+
+But, even if she doesn't know the true population mean, if she knew the amount by which sample averages vary - over repeated random sampling of the sort we've just seen in the code cells above - she could use that information to construct an *interval* in which the population mean probably lies. This is a *confidence interval*.
+
+She can't do this - but we from our luxury perspective can:
+
+```{python}
+# set how many samples to draw
+number_of_samples = 1000
+
+# an empty array to store the sample means
+sample_means = np.empty(number_of_samples)
+
+# draw 1000 random samples of size 25 from the population data
+# and store the mean of each sample in the `sample_means` array
+for i in np.arange(1000):
+    
+    current_sample = babies_pop["birthweight_kg"].sample(25)
+    
+    sample_means[i] = current_sample.mean()
+    
+plt.hist(sample_means, color = 'purple', label = 'Sample Means')
+plt.legend(bbox_to_anchor = (1, 1))
+plt.xlabel('Mean Birthweight (kg)')
+plt.title(f'Distribution of Sample Means \n({number_of_samples} samples)');
+```
+
+[Explain sampling distribution]
+
+Now, if we take the "spread" of this sampling distribution:
+
+```{python}
+left, right = np.percentile(sample_means, [2.5, 97.5])
+print('Left:', left)
+print('Right:', right)
+```
+
+```{python}
+plt.hist(sample_means, color = 'purple', label = 'Sample Means')
+plt.plot([left, right], [5, 5], color='yellow', lw=8, zorder=1,
+         label = "Interval containing 95% of the\nsample means")
+plt.legend(bbox_to_anchor = (1, 1))
+plt.xlabel('Mean Birthweight (kg)')
+plt.title(f'Distribution of Sample Means \n({number_of_samples} samples)');
+```
+
+[Get the width of the interval from our sampling distribution]
+
+```{python}
+width_of_interval = right - left
+width_of_interval 
+```
+
+```{python}
+sample = babies_pop["birthweight_kg"].sample(25)
+plt.hist(babies_pop["birthweight_kg"], color = 'darkblue', 
+         label = 'Population')
+plt.axvline(babies_pop["birthweight_kg"].mean(), 
+            label = f'Mean of Population = \n{population_mean}', 
+            color = "blue")
+
+plt.axvline(sample.mean(), color = "red",
+            label = f'Sample Mean = {sample.mean().round(2)}')
+plt.plot([sample.mean() - width_of_interval /2, sample.mean() + width_of_interval /2], [5, 5],
+         color='yellow', lw=8, zorder=1,
+         label = "Interval containing 95% of the\nsample means")
+plt.legend(bbox_to_anchor = (1, 1));
+```
+
+You can see that the interval we obtained from the sampling distribution contains the population mean a big proportion of the time, even when the sample mean deviates from the population mean.
+
+[Cell below repeats the code from the cell above 100 times, and it shows the proportion of times that the interval contains the population mean, over 10000 repetitions]
+
+```{python}
+number_of_repeats = 10000
+
+contains_population_mean = np.empty(number_of_repeats)
+
+for i in np.arange(number_of_repeats):
+    
+    current_sample = babies_pop["birthweight_kg"].sample(25)
+
+    left_end_of_interval = current_sample.mean() - width_of_interval /2
+    right_end_of_interval = current_sample.mean() + width_of_interval /2
+
+    contains_population_mean[i] = np.logical_and(left_end_of_interval < population_mean, right_end_of_interval > population_mean)
+
+display(Markdown(f"{sum(contains_population_mean)/number_of_repeats * 100} % of the intervals contained the population mean."))
+```
+
+This is meaning of a confidence interval.
+
+*But* - and this is a huge but - we obtained our confidence interval only because we are in the godlike position of being able to access the whole population data, and so we were able to build our confidence interval by repeatedly drawing random samples from the population. This told us how much the means of random samples typically vary from each other, and we used that spread to construct our confidence interval.
+
+Our data scientist cannot do this - she cannot draw new random samples from the population data she cannot access. So what is she to do?
 
 # The Bootstrap
 
-In the present situation - with access to an entire population's worth of data! - to see how different the estimate would be if the sample had come out differently, we can just draw another sample from the population, *but this
-is cheating*. In real life typically we won't have all the population data at hand.
+We've just seen that - even if we don't know the true population mean - if we can draw multiple random samples from the population, we can build a confidence interval, within which the population mean probably lies.
 
-We will be stuck with one sample, trying to make inferences about an underlying population parameter.
+But typically we - and our data scientist! - cannot simply draw more random samples from the population.
 
-Somehow, we have to get another random sample without sampling from the
-population.
+Somehow, she has to get another random sample without sampling from thepopulation.
 
-Fortunately, a brilliant idea called the bootstrap can help out here. The bootstrap let's us simulate drawing new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*.
+Fortunately, a brilliant idea called the bootstrap can help her out here. The bootstrap let's us simulate drawing new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*.
 
 *This may seem like a sleight of hand, but hopefully I can convince you it works!*
 
