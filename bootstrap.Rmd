@@ -193,7 +193,7 @@ plt.title('Population');
 [Something I like to call a "field plot" (just my name for it, not a technical term!). Imagine you're hovering in the sky, looking down on a field. In it are all the babies...]
 
 ```{python}
-field_plot(babies_pop, fontsize = 8, figsize = (12,10))
+field_plot(babies_pop, fontsize = 8, figsize = (12,12))
 ```
 
 Our data scientist understands this principle.

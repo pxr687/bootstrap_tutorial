@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import display, Markdown
 
-def field_plot(babies_pop, fontsize = 8, figsize = (16,16), 
+def field_plot(babies_pop, fontsize = 8, figsize = (12,12), 
                fontweight = "ultralight"):
 
     n_rows = 103
