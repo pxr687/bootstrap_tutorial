@@ -25,13 +25,7 @@ from IPython.display import display, Markdown
 pd.set_option('mode.chained_assignment', 'raise')
 # %matplotlib inline
 import matplotlib.pyplot as plt
-
 from population_sample_image_generator import *
-# just some random coordinates, used in a later plot
-x_coord, y_coord = np.meshgrid(np.arange(0, 1, 1/1236), np.arange(0, 1, 1/1236))
-x_coord, y_coord = x_coord.flatten(), y_coord.flatten() 
-random_coord_indexes = np.random.choice(len(x_coord), 1236, replace = False)
-x_coord, y_coord = x_coord[random_coord_indexes], y_coord[random_coord_indexes]
 
 # Make the plots look more fancy.
 plt.style.use('fivethirtyeight')
@@ -249,7 +243,8 @@ for i in np.arange(1000):
     current_sample = babies_pop["birthweight_kg"].sample(25)
     
     sample_means[i] = current_sample.mean()
-    
+
+# plot the distribution of the sample means
 plt.hist(sample_means, color = 'purple', label = 'Sample Means')
 plt.legend(bbox_to_anchor = (1, 1))
 plt.xlabel('Mean Birthweight (kg)')
@@ -455,15 +450,13 @@ def bootstrap_mean(original_sample, number_of_bootstrap_resamples):
 
     Parameters
     ----------
-    original_sample: Series
-        Series containing the original sample
-    replications: number
-        number of bootstrap samples
+    original_sample: Series containing the original sample
+    number_of_bootstrap_resamples: number of bootstrap resamples
+    to perform
 
     Returns
     -------
-    samp_meds : array
-        Array of bootstrapped sample means.
+    resampled_means : Array of bootstrapped sample means.
     """
     # calculate the length of the original sample
     n = len(original_sample)
@@ -479,7 +472,7 @@ def bootstrap_mean(original_sample, number_of_bootstrap_resamples):
         means[i] = np.mean(bootstrap_sample)
         
     # return the array of estimate means
-    return means
+    return resampled_means
 ```
 
 We now repeat the bootstrap process 1000 times. The array `bstrap_means`
@@ -635,9 +628,9 @@ estimates of the mean.
 intervals
 ```
 
-The good intervals are those that contain the parameter we are trying to
-estimate. Typically the parameter is unknown, but in this section we happen to
-know what the parameter is.
+The good intervals are those that contain the population mean, which we are trying to
+estimate. Typically the parameter is unknown, but again, from our luxury, all-knowing perspective we happen to
+know what the population mean is.
 
 ```{python}
 population_mean
@@ -650,6 +643,14 @@ end is above.
 ```{python}
 intervals["Contains Population mean"] = np.logical_and(left_ends < population_mean, right_ends > population_mean)
 intervals
+```
+
+What percentage of the intervals contain the population mean?
+
+```{python}
+contains_population_mean_resample_intervals = np.logical_and(left_ends < population_mean, right_ends > population_mean)
+
+display(Markdown(f"{sum(contains_population_mean_resample_intervals)/len(intervals) * 100}% of the intervals contained the population mean."))
 ```
 
 It takes a few minutes to construct all the intervals, but try it again if you
@@ -704,6 +705,12 @@ replace 95% by 80% and keep the sample size fixed at 500. Then your intervals
 of estimates will be shorter than those we simulated here, because the "middle
 80%" is a smaller range than the "middle 95%". Only about 80% of your intervals
 will contain the parameter.
+
+## SUMMARY SECTION
+
+[If we are in a godlike perspective, we can construct confidence intervals by...]
+
+[It we are in the typical perspective, the one our data scientist is in, we can construct confidence intervals we can]
 
 
 *Note*: This page has content from the [Bootstrap](https://github.com/data-8/textbook/blob/64b20f0/notebooks/Bootstrap.ipynb)
