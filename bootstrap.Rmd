@@ -378,11 +378,12 @@ for i in np.arange(len(intervals)):
     plt.plot(ends, [i, i], color='gold')
 plt.axvline(population_mean,  color='blue', label = 'Population mean')
 plt.plot([], [], color = 'gold',
-         label = "Intervals containing 95% of the means for a given repeat")
+         label = "Intervals containing 95% \nof the means for a given repeat")
 plt.ylabel('Repeat Number')
 plt.xlabel('Birthweight (kg)')
-plt.yticks(np.arange(len(intervals), 5))
-plt.title('Population mean and Intervals of Estimates');
+plt.yticks(np.arange(0, len(intervals)+1, 5))
+plt.title('Population mean and Intervals of Estimates')
+plt.legend(bbox_to_anchor = (1, 1));
 ```
 
 This is meaning of a confidence interval.
@@ -623,7 +624,8 @@ right_ends = np.zeros(n_intervals)
 
 for i in np.arange(n_intervals):
     
-    display(Markdown(f"{i}/{n_intervals} completed."))
+    if i in np.arange(0, 101, 10):
+        display(Markdown(f"{i}/{n_intervals} completed."))
     
     # one trial, generating a left and right interval
     
@@ -639,6 +641,9 @@ for i in np.arange(n_intervals):
     # store the results for this trial
     left_ends[i] = left_end
     right_ends[i] = right_end
+
+# show when done
+display(Markdown(f"Completed!"))
 
 # put interval ends into own data frame.
 intervals = pd.DataFrame()
@@ -690,7 +695,7 @@ plt.axvline(population_mean,  color='blue', label = 'Population mean')
 plt.plot([], [], color = 'gold',
          label = "Intervals containing 95% of the\nbootstrapped means for a given repeat")
 plt.ylabel('Repeat Number')
-plt.yticks(np.arange(n_intervals))
+plt.yticks(np.arange(0, n_intervals+1, 5))
 plt.xlabel('Birthweight (kg)')
 plt.title('Population mean and Intervals of Estimates');
 ```
