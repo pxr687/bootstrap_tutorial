@@ -614,6 +614,8 @@ print('Left', right_end)
 
 Let's use some python looping to re-run this process 20 times [in order to]...
 
+<b>LINE 16 NEEDS AMENDING - set up "re-run the tape scenario".</b>
+
 ```{python}
 # THE BIG SIMULATION: this one can take a minute or two
 
@@ -698,7 +700,13 @@ plt.ylabel('Repeat Number')
 plt.yticks(np.arange(0, n_intervals+1, 5))
 plt.xlabel('Birthweight (kg)')
 plt.title('Population mean and Intervals of Estimates');
+plt.axvline(sample_mean, color = 'red', label = f"Sample Mean (= {round(sample_mean, 2)})");
 ```
+
+<b> NOTE: </b> set up a "run the tape back scenario" - we want to know how good this procedure is for capturing the population mean.
+
+Data scientist is given the random sample of 25, does the bootstrap....we "re-run the tape of reality"...how many times does her interval contain the population mean.
+
 
 Let's summarize the process of generating bootstrap confidence intervals:
 
