@@ -31,7 +31,6 @@ def field_plot(babies_pop, fontsize = 8, figsize = (12,12),
     plt.yticks([])
     plt.axis('off')
 
-    
     # show faded population data, and highlighted sample
     plt.subplot(1, 2, 2)
     sample_indexes = np.random.choice(np.arange(len(babies_pop)), 25)
