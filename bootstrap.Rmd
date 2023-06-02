@@ -562,6 +562,8 @@ len(bootstrap_sample_means)
 Here is the histogram of the 1000 means from the bootstrap resamples. The blue line is the population
 mean, which we happen to know but did not use in the bootstrap process.
 
+<b> CONSIDER REPLICATING THE PROCESS FROM ABOVE HERE - JUST GETTING THE WIDTH OF THE INTERVAL AND USING THAT TO BUILD THE CONFIDENCE INTERVAL FOR THE BIG SIMULATION </b>
+
 ```{python}
 # a new dataframe for the means, obtained via resampling
 resampled_means = pd.DataFrame()
@@ -605,19 +607,16 @@ plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resam
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
-<!-- #region -->
 Remember the confidence intervals we generated from our all-knowing perspective?
 We demonstrated through [....] that these captured the population mean around 95% of the time
 
 Do the boostrap confidence intervals perform as well? [Remember that the bootstrap ones don't need all knowing perspective]
-
 
 The cell blow does [....]
 
 <b>LINE 16 NEEDS AMENDING - set up "re-run the tape scenario".</b>
 
 We can run this cell manually many times to get a feel for how often the bootstrapped confidence intervals capture the population mean:
-<!-- #endregion -->
 
 ```{python}
 # One trial, generating a left and right interval.
