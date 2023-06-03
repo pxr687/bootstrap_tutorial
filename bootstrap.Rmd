@@ -31,7 +31,7 @@ from population_sample_image_generator import *
 plt.style.use('fivethirtyeight')
 ```
 
-## Confidence intervals
+# Confidence intervals
 
 - We will look at confidence intervals via a modern code-based method of generating them, called the bootsrap
 
@@ -411,7 +411,7 @@ plt.scatter([], [], color='red', marker = "|", label = "Sample mean")
 plt.xlabel('Birthweight (kg)')
 plt.ylabel('Repeat Number')
 plt.yticks(np.arange(0, len(intervals)+1, 5))
-plt.title('Population mean and Confidence Intervals')
+plt.title('Population Mean and Confidence Intervals\n(All-knowing perspective)')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
@@ -447,7 +447,7 @@ Here are the steps of *the bootstrap method* for simulating the process of drawi
 samples from the population:
 
 - **Treat the original sample as if it were the population.**
-- **Draw from the sample - the same size as the original sample -**, at random **with** replacement.
+- **Draw a new sample - the same size as the original sample -**, at random **with** replacement.
 
 So let's just break that down: to get our new sample - I'll refer to this as a "bootstrap resample" - we select a baby at random from our original sample and record their birthweight. We then put that baby's record back in with the other records in the sample and then draw again at random. We do this until we have a new sample of 25 birthweights.
 
