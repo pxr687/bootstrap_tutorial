@@ -216,9 +216,9 @@ This phenomenon is called *sampling error* - sample averages tend to deviate fro
 
 So when our data scientist is questioning whether her sample average is a good representation of the population average, she knows that the answer is something like:
 
-> "the population average is probably somewhere near my sample average, but because of sampling error the population average is going to be my sample average **plus or minus a bit**".
+> "the population mean is probably somewhere near my sample mean, but because of sampling error the population mean is going to be my sample mean **plus or minus a bit**".
 
-This "plus or minus a bit" here means her sample average is an *uncertain* estimate of the population average.
+This "plus or minus a bit" here entails that her sample average is an *uncertain* estimate of the population average.
 
 But how uncertain is her estimate? How does she know how big "plus or minus a bit" might be? Our data scientist is not in the luxury, all knowing perspective we are currently in. We can simply draw new random samples to see how much, on average, their means vary. We can also "peek" at the true population mean. Our data scientist cannot do either.
 
@@ -226,7 +226,7 @@ Currently, two things things are hidden from our data scientist:
 
 - The population mean itself
 
-- The amount by which sample means of different random samples vary from each other
+- The amount by which sample means from different random samples vary from each other
 
 If she knew the population mean, she wouldn't have to infer anything from her sample. She could just report the population mean to the rest of her reserch team, and proceed with the rest of the project.
 
@@ -497,7 +497,7 @@ plt.legend(bbox_to_anchor = (1,1));
 
 Each time we resample, we generate something like a new sample mean with which estimate of the population
 mean. By resampling again and again, we will get many such new sample means, allowing us to build
-a distribution of sample means. 
+a distribution of boostrapped sample means. 
 
 This tells us how much sample means are likely to vary from each other as we draw repeated new random samples, and this information can be used to build a confidence interval. 
 
@@ -658,7 +658,7 @@ Let's return to our all-knowing perspective once more. Only now, let's enhance o
 
 * 1. We "travel" to the point in time where the data scientist is given her random sample of 25 baby records by the hospital.
 * 2. She calculates its mean, and uses bootstrap resampling to generate a confidence interval.
-* 3. We use our powers to "rewind the tape" of reality, back to step 1 above.
+* 3. We use our powers to "rewind the tape of reality", back to step 1 above.
 
 By "rewinding the tape" like this, we can see how often boostrap confidence intervals capture the population mean, for new random samples.
 
