@@ -48,7 +48,7 @@ However, the data scientist is in a predicament.  Initially, she was granted acc
 
 But disaster has struck, and the hospital's medical records department has been subject to a ransomware attack, and so the full dataset is inaccessible, for a indeterminate period of time. (Alas, research rarely goes to plan!).
 
-At the moment, she only has her random sample of 25 babies, which is shown the output of the code cell below:
+At the moment, she only has her random sample of 25 babies, which is shown as the output of the code cell below:
 
 ```{python}
 # load in the sample data (this IS real data!)
@@ -194,7 +194,7 @@ plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population & Sample');
 ```
 
-We can see that from each new random sample, sometimes we get good estimates of the population mean, sometimes we get bad estimates.
+We can see that from each new random sample, sometimes we get a good estimate of the population mean, sometimes we get a bad estimate.
 
 <!-- #region -->
 ## Plus or minus a bit
@@ -417,7 +417,7 @@ plt.legend(bbox_to_anchor = (1, 1));
 
 This is meaning of a confidence interval - over repeated random samples drawn from the population, the interval will contain the population mean around 95% of the time.
 
-So, even if our data scientist didn't know the population mean, if she had access to this interval, she could present it alongside her sample mean and confidently inform her colleagues that the population mean is likely within this interval, centered around her sample mean.
+So, even if our data scientist didn't know the population mean, if she had access to this interval - let's say we, from our all-knowing perspective give it to her - she could present it alongside her sample mean and confidently inform her colleagues that the population mean is likely within this interval, centered around her sample mean.
 
 *But* - and this is a huge but - we obtained our confidence interval here only because we are in the godlike, all-knowing position of being able to access the whole population data, and so we were able to build our confidence interval by repeatedly drawing random samples from the population. This told us how much the means of random samples typically vary from each other, and we used that spread to construct our confidence interval.
 
@@ -756,7 +756,7 @@ plt.legend(bbox_to_anchor = (1, 1));
 
 ## Summary
 
-If we are in a godlike, all-knowing perspective, we can construct confidence intervals by drawing many random sampled from the population data. We can then plot the distribution of means from these samples, and then use the "width" of this distribution to construct confidence intervals...
+If we are in a godlike, all-knowing perspective, of having access to population data, we can construct confidence intervals by drawing many random samples from the population data. We can then plot the distribution of means from these samples, and then use the "width" of this distribution to construct confidence intervals...
 
 BUT if we're in a real world situation - with no access to the full population data - we can use the boostrap:
 
