@@ -196,6 +196,7 @@ plt.title('Population & Sample');
 
 We can see that from each new random sample, sometimes we get good estimates of the population mean, sometimes we get bad estimates.
 
+<!-- #region -->
 ## Plus or minus a bit
 
 I've just re-run several of the code cells above multiple times, each time drawing a new random sample from the population data.
@@ -232,9 +233,12 @@ Think of it this way: if our data scientist could draw many more random samples 
 
 This interval is a *confidence interval*. It gives us a precise estimate to how big "plus or minus a bit" it, when we say "the population mean is probably our sample mean, plus or minus a bit".
 
+## Confidence intervals - from our "all knowing" perspective
+
 This might all sound a bit abstract. So let's convince ourselves it is true using code. Our data scientist can't draw new random samples from the population - but we from our luxury perspective can.
 
 The code cell below repeats some code 1000 times. On each repeat, it draws a new random sample of 25 babies (just as in the code cells above). Each time a new sample is drawn, the mean of that sample is calculated. Once the code has run, we will have the means of 1000 random samples, drawn from the population data. This will tell us how much the means of random samples tend to vary from each other:
+<!-- #endregion -->
 
 ```{python}
 # set how many samples to draw
