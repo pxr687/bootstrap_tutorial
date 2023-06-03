@@ -134,6 +134,7 @@ population_mean = babies_pop["birthweight_kg"].mean().round(2)
 plt.axvline(babies_pop["birthweight_kg"].mean(), 
             label = f'Mean of Population = \n{population_mean}', 
             color = "blue")
+
 # add axis labels and legend
 plt.xlabel('Birthweight (kg)')
 plt.legend(bbox_to_anchor = (1,1))
@@ -155,40 +156,7 @@ display(Markdown(f"\nNew sample mean = {np.mean(new_sample).round(2)}"))
 display(new_sample.round(2))
 ```
 
-From our omniscient perspective, let's draw another random sample and let's plot it against the population data, so we can see graphically how close or far our sample average is from the population average.
-
-Through running this code cell multiple times, we can build an intuition for how much the sample averages vary, over repeated sample.
-
-As we run the cell multiple times, let's evaluate how accurate it would be to use each single sample's mean as an estimate of the population mean - this will show us why our data scientist is reluctant to "trust" the mean of her single sample as an estimate of the population average:
-
-```{python}
-# draw a new random sample
-sample = babies_pop["birthweight_kg"].sample(25)
-
-# plot a histogram, show the pop and pop mean
-plt.hist(babies_pop["birthweight_kg"], color = 'darkblue', 
-         label = 'Population')
-plt.axvline(babies_pop["birthweight_kg"].mean(), 
-            label = f'Mean of Population = \n{population_mean}', 
-            color = "blue")
-
-# show the new sample and new sample mean
-plt.scatter(sample, np.repeat(9, len(sample)), 
-            marker = "|", s = 400, 
-            color = 'darkred',
-            label = 'Sample Elements')
-plt.axvline(sample.mean(), color = "red",
-            label = f'Sample Mean = {sample.mean().round(2)}')
-    
-# add axis labels and legend
-plt.xlabel('Birthweight (kg)')
-plt.legend(bbox_to_anchor = (1,1))
-plt.title('Population & Sample');
-```
-
-We can see that from each sample, sometimes we get good estimates of the population mean, sometimes we get bad estimates.
-
-Another way of showing this process is on which I like to call a "field plot" (just my name for it!). Imagine you're hovering in the sky, looking down on a field. In it are all the 1236 babies in the population are sitting in perfect lines (12 lines, with 103 babies in each). 
+Another way of showing this process of random sampling is to use something I like to call a "field plot" (just my name for it!). Imagine you're hovering in the sky, looking down on a field. In it are all the 1236 babies in the population are sitting in perfect lines (12 lines, with 103 babies in each). 
 
 The graph below on the left shows these lines (viewed from above) and in the location of each baby, the birthweight of that baby is displayed. The graph on the left shows all of the birthweights for all 1236 babies.
 
@@ -198,6 +166,39 @@ The graph on the right shows a random sample of 25 of the baby birthweights (hig
 # this is a custom function, as the code to produce this plot is quite long...
 field_plot(babies_pop, fontsize = 8, figsize = (12,12))
 ```
+
+From our omniscient perspective, let's draw another random sample and let's plot it against the population data, so we can see graphically how close or far our sample average is from the population average.
+
+Through running this code cell multiple times, we can build an intuition for how much the sample averages vary, over repeated sample.
+
+As we run the cell multiple times, let's evaluate how accurate it would be to use each single sample's mean as an estimate of the population mean - this will show us why our data scientist is reluctant to "trust" the mean of her single sample as an estimate of the population average:
+
+```{python}
+# draw a new random sample
+new_sample = babies_pop["birthweight_kg"].sample(25)
+
+# plot a histogram, show the pop and pop mean
+plt.hist(babies_pop["birthweight_kg"], color = 'darkblue', 
+         label = 'Population')
+plt.axvline(babies_pop["birthweight_kg"].mean(), 
+            label = f'Mean of Population = \n{population_mean}', 
+            color = "blue")
+
+# show the new sample and new sample mean
+plt.scatter(new_sample, np.repeat(9, len(new_sample)), 
+            marker = "|", s = 400, 
+            color = 'darkred',
+            label = 'Sample Elements')
+plt.axvline(new_sample.mean(), color = "red",
+            label = f'Sample Mean = {new_sample.mean().round(2)}')
+    
+# add axis labels and legend
+plt.xlabel('Birthweight (kg)')
+plt.legend(bbox_to_anchor = (1,1))
+plt.title('Population & Sample');
+```
+
+We can see that from each new random sample, sometimes we get good estimates of the population mean, sometimes we get bad estimates.
 
 ## Plus or minus a bit
 
@@ -213,7 +214,9 @@ Sometimes the deviation of the sample average from the population average is lar
 
 This phenomenon is called *sampling error* - sample averages tend to deviate from the population average, even when the sample is random.
 
-So when our data scientist is questioning whether her sample average is a good representation of the population average, she knows that the answer is "the population average is probably somewhere near my sample average, but because of sampling error the population average is going to be something like my sample average **plus or minus a bit**".
+So when our data scientist is questioning whether her sample average is a good representation of the population average, she knows that the answer is something like:
+
+> "the population average is probably somewhere near my sample average, but because of sampling error the population average is going to be my sample average **plus or minus a bit**".
 
 This "plus or minus a bit" here means her sample average is an *uncertain* estimate of the population average.
 
@@ -235,9 +238,7 @@ This interval is a *confidence interval*. It gives us a precise estimate to how 
 
 This might all sound a bit abstract. So let's convince ourselves it is true using code. Our data scientist can't draw new random samples from the population - but we from our luxury perspective can.
 
-The code cell below repeats some code 1000 times. On each repeat, it draws a new random sample of 25 babies (just as in the code cells above). 
-
-Each time a new sample is drawn, the mean of that sample is calculated. Once the code has run, we will have the means of 1000 random samples, drawn from the population data. This will tell us how much the means of random samples tend to vary from each other:
+The code cell below repeats some code 1000 times. On each repeat, it draws a new random sample of 25 babies (just as in the code cells above). Each time a new sample is drawn, the mean of that sample is calculated. Once the code has run, we will have the means of 1000 random samples, drawn from the population data. This will tell us how much the means of random samples tend to vary from each other:
 
 ```{python}
 # set how many samples to draw
@@ -311,14 +312,14 @@ If we re-run the cell lots of times, we can see that a very high proportion of t
 
 ```{python}
 # draw a new random sample
-sample = babies_pop["birthweight_kg"].sample(25)
+new_sample = babies_pop["birthweight_kg"].sample(25)
 
 # plot the population histogram
 plt.hist(babies_pop["birthweight_kg"], color = 'darkblue', 
          label = 'Population')
 
 # plot the confidence interval
-plt.plot([sample.mean() - width_of_interval /2, sample.mean() + width_of_interval /2], [5, 5],
+plt.plot([new_sample.mean() - width_of_interval /2, new_sample.mean() + width_of_interval /2], [5, 5],
          color='yellow', lw=8, zorder=1,
          label = "Interval containing 95% of the\nsample means")
 
@@ -328,9 +329,10 @@ plt.axvline(babies_pop["birthweight_kg"].mean(),
             color = "blue")
 
 # plot the sample mean
-plt.axvline(sample.mean(), color = "red",
-            label = f'Sample Mean = {sample.mean().round(2)}')
+plt.axvline(new_sample.mean(), color = "red",
+            label = f'Sample Mean = {new_sample.mean().round(2)}')
 
+plt.title('Population, Sample and \nConfidence Interval')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
@@ -377,11 +379,11 @@ for i in np.arange(number_of_repeats):
     contains_population_mean[i] = np.logical_and(left_end_of_interval < population_mean, right_end_of_interval > population_mean)
     
 # display the percentage of repeats where the interval contained the population mean
-display(Markdown(f"First, we drew 1000 random samples from the population, and plotted a histogram of their means."))
+display(Markdown(f"First, from our 'all-knowing' perspective we drew 1000 random samples from the population, and plotted a histogram of their means."))
 display(Markdown(f"Then we calculated the interval 'picking out' the middle 95% of that distribution of means."))
-display(Markdown(f"{number_of_repeats} new random samples have been drawn."))
-display(Markdown(f"For each sample, the sample mean has been calculated. And we have 'placed' the interval over each sample mean."))
-display(Markdown(f"<b>{sum(contains_population_mean)/number_of_repeats * 100}% of the intervals contained the population mean.</b>"))
+display(Markdown(f"Then, we drew {number_of_repeats} NEW random samples."))
+display(Markdown(f"For each new sample, the sample mean has been calculated. And we have 'placed' the interval over each sample mean."))
+display(Markdown(f"<b>{sum(contains_population_mean)/number_of_repeats * 100}% of these intervals contained the population mean.</b>"))
 ```
 
 We can also demonstrate this graphically - the plot below shows the 100 confidence intervals generated by the code cell above:
@@ -409,13 +411,13 @@ plt.scatter([], [], color='red', marker = "|", label = "Sample mean")
 plt.xlabel('Birthweight (kg)')
 plt.ylabel('Repeat Number')
 plt.yticks(np.arange(0, len(intervals)+1, 5))
-plt.title('Population mean and Intervals of Estimates')
+plt.title('Population mean and Confidence Intervals')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
 This is meaning of a confidence interval - over repeated random samples drawn from the population, the interval will contain the population mean around 95% of the time.
 
-Even if our data scientist didn't know the population mean, if she has access to this interval, she could present it alongside her sample mean and confidently inform her colleagues that the population mean is likely within this interval, centered around her sample mean.
+So, even if our data scientist didn't know the population mean, if she has access to this interval, she could present it alongside her sample mean and confidently inform her colleagues that the population mean is likely within this interval, centered around her sample mean.
 
 *But* - and this is a huge but - we obtained our confidence interval here only because we are in the godlike position of being able to access the whole population data, and so we were able to build our confidence interval by repeatedly drawing random samples from the population. This told us how much the means of random samples typically vary from each other, and we used that spread to construct our confidence interval.
 
@@ -425,7 +427,7 @@ Our data scientist cannot do this - she cannot draw new random samples from the 
 
 Our data scientists is in the situation a person in research is typically in: she doesn't have access to the population data, and she cannot simply draw more random samples from the population. She's limited to the one sample she has. 
 
-Somehow, to build a confidence interval, she has to get lots of new random samples without being able to draw any new random samples from the population. This seems like an impossible situation.
+Somehow, to build a confidence interval, she has to get lots of new random samples, to see how much they vary from each other, and use this variability to construct her confidence interval. However, she has to do this without being able to draw any new random samples from the population. This seems like an impossible situation.
 
 Fortunately, a brilliant idea called the bootstrap can help her out here. The bootstrap let's us simulate drawing new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*. This can allow us to build confidence intervals like we've just seen: **but we do not need access to the population data in order to this, we just need our single, random sample**.
 
@@ -445,7 +447,7 @@ Here are the steps of *the bootstrap method* for simulating the process of drawi
 samples from the population:
 
 - **Treat the original sample as if it were the population.**
-- **Draw from the sample -the same size as the original sample -**, at random **with** replacement.
+- **Draw from the sample - the same size as the original sample -**, at random **with** replacement.
 
 So let's just break that down: to get our new sample - I'll refer to this as a "bootstrap resample" - we select a baby at random from our original sample and record their birthweight. We then put that baby's record back in with the other records in the sample and then draw again at random. We do this until we have a new sample of 25 birthweights.
 
@@ -459,7 +461,7 @@ been, we have to compare it to the mean of other samples of size 25.
 If we drew 25 times at random *without* replacement from our sample of size
 25, we would just get the same sample back. By drawing *with* replacement, we
 create the possibility for the new samples to be different from the original,
-because some employees might be drawn more than once and others not at all.
+because some babies might be drawn more than once and others not at all.
 
 Why is this a good idea? On average, **random samples tend to resemble the population...so random bootstrap resamples of the sample tend to resemble the population as well**. This entails that when we generate bootstrap resamples and calculate their means, these means provide pretty good estimates of the population mean. They also provide pretty good estimates of how much the means of random samples tend to vary from each other (and this is in the information we need to build our confidence interval!).
 
@@ -497,7 +499,9 @@ Each time we resample, we generate something like a new sample mean with which e
 mean. By resampling again and again, we will get many such new sample means, allowing us to build
 a distribution of sample means. 
 
-This tells us how much sample means are likely to vary from each other as we draw repeated new random samples, and this information can be used to build a confidence interval. **But** this time we aren't drawing any new samples from the population data - e.g. we aren't relying on our rare and luxury perspective - in order to generate this distribution of sample means. We are "bootstrapping" this distribution from the one random sample we have. This technique is available to our data scientist, using just the one sample she has!
+This tells us how much sample means are likely to vary from each other as we draw repeated new random samples, and this information can be used to build a confidence interval. 
+
+**But** this time we aren't drawing any new samples from the population data - e.g. we aren't relying on our rare and luxury perspective - in order to generate this distribution of sample means. We are "bootstrapping" this distribution from one random sample. So, this technique is available to our data scientist, using just the one sample she has!
 
 ## A distribution of means from bootstrap resamples
 
@@ -579,16 +583,16 @@ plt.legend(bbox_to_anchor = (1, 1));
 ## Building a bootstrap confidence interval
 
 
-Just to recap: earlier we used our "all-knowing" perspective to draw 1000 random samples directly from the population data. We then used the distribution of the means of those samples to build a confidence interval (using the width of the interval covering the middle 95% of the sample means.
+Just to recap: earlier we used our "all-knowing" perspective to draw 1000 random samples directly from the population data. We then used the distribution of the means of those samples to build a confidence interval (using the width of the interval covering the middle 95% of the sample means).
 
-Well, now we've done something very similar through the bootstrap resampling - only we've done it from a single random sample, without accessing the population data.
+*Well, now we've done something very similar through the bootstrap resampling - only we've done it from a single random sample, without accessing the population data.*
 
 We can construct an interval the same way as before:
 
 ```{python}
-left, right = np.percentile(bootstrap_sample_means, [2.5, 97.5])
-print('Left:', left)
-print('Right:', right)
+left_boostrap_interval, right_boostrap_interval = np.percentile(bootstrap_sample_means, [2.5, 97.5])
+print('Left:', left_boostrap_interval)
+print('Right:', right_boostrap_interval)
 ```
 
 We show the interval on the histogram of boostrap resample means:
@@ -596,8 +600,9 @@ We show the interval on the histogram of boostrap resample means:
 ```{python}
 # show the boostrap resample distribution, and its middle 95%
 resampled_means.plot.hist(color = 'purple')
-plt.plot([left, right], [5, 5], color='yellow', lw=8, zorder=1,
-         label = "Interval containing 95% of the\nbootstrapped means")
+plt.plot([left_boostrap_interval, right_boostrap_interval], [5, 5],
+         color='yellow', lw=8, zorder=1,
+         label = "Interval containing 95% of the\nbootstrapped sample means")
 plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resamples}) resamples')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
@@ -611,7 +616,7 @@ sample_mean
 
 ```{python}
 # get the width of the boostrap confidence interval
-width_from_boostrap = right - left
+width_from_boostrap = right_boostrap_interval - left_boostrap_interval
 width_from_boostrap
 ```
 
@@ -621,15 +626,13 @@ width_from_boostrap
 plt.hist(babies_pop["birthweight_kg"], color = 'darkblue', 
          label = 'Population')
 
-# store the population mean as a variable
-population_mean = babies_pop["birthweight_kg"].mean().round(2)
-
+# show the population mean
 plt.axvline(babies_pop["birthweight_kg"].mean(), 
             label = f'Mean of Population = \n{population_mean}', 
             color = "blue")
 
 # plot the confidence interval
-plt.plot([sample_mean - width_from_boostrap /2, sample_mean  + width_from_boostrap /2], [5, 5],
+plt.plot([sample_mean - width_from_boostrap/2, sample_mean  + width_from_boostrap/2], [5, 5],
          color='yellow', lw=8, zorder=1,
          label = "Interval containing 95% of the\nboostrap resample means")
 
@@ -640,7 +643,7 @@ plt.axvline(babies_pop["birthweight_kg"].mean(),
 
 # plot the sample mean
 plt.axvline(sample_mean, color = "red",
-            label = f'Mean of Original Sample = {sample.mean().round(2)}')
+            label = f'Mean of Original Sample = {sample_mean.round(2)}')
 # add axis labels and legend
 plt.xlabel('Birthweight (kg)')
 plt.legend(bbox_to_anchor = (1,1))
@@ -653,8 +656,8 @@ Just as with the confidence intervals we generated earlier, 95% of the time, int
 
 Let's return to our all-knowing perspective once more. Only now, let's enhance our powers. We can not only "see" the full population data, we can also rewind time. We repeat the following process:
 
-* 1. We "travel" to the point in time where the data scientist is given her random sample of 25 baby records by the hospital
-* 2. She calculates its mean, and uses bootstrap resampling to generate a confidence interval
+* 1. We "travel" to the point in time where the data scientist is given her random sample of 25 baby records by the hospital.
+* 2. She calculates its mean, and uses bootstrap resampling to generate a confidence interval.
 * 3. We use our powers to "rewind the tape" of reality, back to step 1 above.
 
 By "rewinding the tape" like this, we can see how often boostrap confidence intervals capture the population mean, for new random samples.
@@ -666,9 +669,9 @@ We'll show this process using some python code:
 
 # set up to make 20 left and right intervals, and sample means
 n_intervals = 100
-left_ends = np.empty(n_intervals)
-right_ends = np.empty(n_intervals)
-random_sample_means = np.empty(n_intervals)
+big_sim_left_ends = np.empty(n_intervals)
+big_sim_right_ends = np.empty(n_intervals)
+big_sim_random_sample_means = np.empty(n_intervals)
 
 # repeat the following process, n_intervals number of times...
 for i in np.arange(n_intervals):
@@ -681,31 +684,31 @@ for i in np.arange(n_intervals):
     this_sample = babies_pop['birthweight_kg'].sample(25)
     
     # get the distribution of bootstrap resample means, from the single new sample
-    these_means = bootstrap_mean(this_sample, number_of_bootstrap_resamples)
+    big_sim_boostrap_sample_means = bootstrap_mean(this_sample, number_of_bootstrap_resamples)
     
-    # calculate the left, right ends of the interval
-    left_end, right_end = np.percentile(these_means, [2.5, 97.5])
+    # calculate the left, right ends of the interval, for the current repeat
+    current_left_end, current_right_end = np.percentile(big_sim_boostrap_sample_means, [2.5, 97.5])
     
     # store the results for this trial
-    left_ends[i] = left_end
-    right_ends[i] = right_end
-    random_sample_means[i] = this_sample.mean()
+    big_sim_left_ends[i] = current_left_end
+    big_sim_right_ends[i] = current_right_end
+    big_sim_random_sample_means[i] = this_sample.mean()
 
 # show when done
 display(Markdown(f"Completed!"))
 
 # put interval ends into own data frame.
-intervals_and_means = pd.DataFrame()
-intervals_and_means['Sample Mean'] = random_sample_means
-intervals_and_means['Left'] = left_ends
-intervals_and_means['Right'] = right_ends
+big_sim_intervals_and_means = pd.DataFrame()
+big_sim_intervals_and_means['Sample Mean'] = big_sim_random_sample_means
+big_sim_intervals_and_means['Left'] = big_sim_left_ends
+big_sim_intervals_and_means['Right'] = big_sim_right_ends
 ```
 
 For each of the 100 repeats, we get one new random sample, and new sample mean, and a new boostrapped confidence interval (bootstrap resampled from the new random sample):
 
 ```{python}
 # show the sample interval
-intervals_and_means.round(2)
+big_sim_intervals_and_means.round(2)
 ```
 
 The good intervals are those that contain the population mean, which we are trying to
@@ -723,16 +726,15 @@ end is above.
 
 ```{python}
 # add a column to the intervals dataframe, showing if the interval captures the population mean
-intervals_and_means["Contains Population mean"] = np.logical_and(left_ends < population_mean, right_ends > population_mean)
-intervals_and_means.round(2)
+big_sim_intervals_and_means["Contains Population Mean"] = np.logical_and(big_sim_intervals_and_means['Left'] < population_mean,
+                                                                         big_sim_intervals_and_means['Right'] > population_mean)
+big_sim_intervals_and_means.round(2)
 ```
 
 What percentage of the intervals contain the population mean?
 
 ```{python}
-contains_population_mean_resample_intervals = np.logical_and(left_ends < population_mean, right_ends > population_mean)
-
-display(Markdown(f"{sum(contains_population_mean_resample_intervals)/len(intervals_and_means) * 100}% of the intervals contained the population mean."))
+display(Markdown(f"{big_sim_intervals_and_means['Contains Population Mean'].sum()/len(big_sim_intervals_and_means) * 100}% of the intervals contained the population mean."))
 ```
 
 We can show this graphically:
@@ -743,28 +745,35 @@ plt.figure(figsize=(10,10))
 
 # plot the boostrap confidence intervals
 for i in np.arange(len(intervals)):
-    ends = intervals_and_means[['Left', 'Right']].iloc[i]
-    plt.scatter(intervals_and_means["Sample Mean"][i], i,
+    ends = big_sim_intervals_and_means[['Left', 'Right']].iloc[i]
+    plt.scatter(big_sim_intervals_and_means["Sample Mean"][i], i,
                 color='red', marker = "|")
     plt.plot(ends, [i, i], color='gold', zorder=0)
     
 # show the population mean and add labels
 plt.axvline(population_mean,  color='blue', label = 'Population mean')
 plt.plot([], [], color = 'gold',
-         label = "Intervals containing 95% of the\nbootstrapped means for a given repeat")
+         label = "Intervals containing 95% of the\nbootstrap resample means for a given repeat")
+plt.scatter([], [], color='red', marker = "|", label = "Sample mean")
 plt.ylabel('Repeat Number')
 plt.yticks(np.arange(0, n_intervals+1, 5))
 plt.xlabel('Birthweight (kg)')
-plt.title('Population mean and Intervals of Estimates')
+plt.title('Population mean and Boostrapped Intervals')
 plt.legend(bbox_to_anchor = (1, 1));
-
 ```
 
 ## Summary
 
-[If we are in a godlike perspective, we can construct confidence intervals by...]
+If we are in a godlike, all-knowing perspective, we can construct confidence intervals by drawing many random sampled from the population data. We can then plot the distribution of means from these samples, and then use the "width" of this distribution to construct confidence intervals...
 
-[It we are in the typical perspective, the one our data scientist is in, we can construct confidence intervals we can]
+BUT if we're in a real world situation - with no access to the full population data - we can use the boostrap:
+
+- treat the random sample as if it is the population
+- draw many new "bootstrap resamples" from the original sample, by sampling WITH replacement
+- plot the distribution of means from these boostrap resamples
+- use the "spread" of the distribution of boostrap means to construct our confidence interval
+
+We have seen that boostrap confidence intervals will capture the population mean around 95% of the time, over many new random samples...
 
 
 *Note*: This page has content from the [Bootstrap](https://github.com/data-8/textbook/blob/64b20f0/notebooks/Bootstrap.ipynb)
