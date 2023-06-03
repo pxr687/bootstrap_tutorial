@@ -594,7 +594,7 @@ print('Right:', right)
 We show the interval on the histogram of boostrap resample means:
 
 ```{python}
-# show the boostrap resample distribution, its middle 95%, and the population mean
+# show the boostrap resample distribution, and its middle 95%
 resampled_means.plot.hist(color = 'purple')
 plt.plot([left, right], [5, 5], color='yellow', lw=8, zorder=1,
          label = "Interval containing 95% of the\nbootstrapped means")
@@ -602,86 +602,110 @@ plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resam
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
-Remember the confidence intervals we generated from our all-knowing perspective?
-We demonstrated through [....] that these captured the population mean around 95% of the time
-
-Do the boostrap confidence intervals perform as well? [Remember that the bootstrap ones don't need all knowing perspective]
-
-The cell blow does [....]
-
-<b>LINE 16 NEEDS AMENDING - set up "re-run the tape scenario".</b>
-
-We can run this cell manually many times to get a feel for how often the bootstrapped confidence intervals capture the population mean:
+Our data scientist can present this interval - obtained from boostrap resampling her single random sample - alongside her sample mean:
 
 ```{python}
-# One trial, generating a left and right interval.
-# Take a new sample.
-this_sample = babies_sample['birthweight_kg'].sample(25, replace=True)
-
-# Get the bootstrap sampling distribution of the mean.
-these_means = pd.Series(bootstrap_mean(this_sample, number_of_bootstrap_resamples))
-
-these_means.plot.hist(color = 'purple', label = "Boostrap Sample means")
-plt.axvline(population_mean,  color='blue', label = 'Population mean')
-
-# Calculate the left, right ends, and plot them.
-left_end, right_end = np.percentile(these_means, [2.5, 97.5])
-plt.plot([left_end, right_end], [0, 0], color='yellow', lw=8, zorder=1,
-         label = "Interval containing 95% of the\nbootstrapped means")
-
-# add plot labels
-plt.show()
-
-# show the left and right end values
-print('Left', left_end)
-print('Left', right_end)
+# mean of the original sample
+sample_mean
 ```
 
-Let's use some python looping to re-run this process 20 times [in order to]...
+```{python}
+# get the width of the boostrap confidence interval
+width_from_boostrap = right - left
+width_from_boostrap
+```
+
+```{python}
+# show the sample mean, boostrap confidence interval, and the population data
+# plot a histogram, show the pop and pop mean
+plt.hist(babies_pop["birthweight_kg"], color = 'darkblue', 
+         label = 'Population')
+
+# store the population mean as a variable
+population_mean = babies_pop["birthweight_kg"].mean().round(2)
+
+plt.axvline(babies_pop["birthweight_kg"].mean(), 
+            label = f'Mean of Population = \n{population_mean}', 
+            color = "blue")
+
+# plot the confidence interval
+plt.plot([sample_mean - width_from_boostrap /2, sample_mean  + width_from_boostrap /2], [5, 5],
+         color='yellow', lw=8, zorder=1,
+         label = "Interval containing 95% of the\nboostrap resample means")
+
+# plot the population mean
+plt.axvline(babies_pop["birthweight_kg"].mean(), 
+            label = f'Mean of Population = \n{population_mean}', 
+            color = "blue")
+
+# plot the sample mean
+plt.axvline(sample_mean, color = "red",
+            label = f'Mean of Original Sample = {sample.mean().round(2)}')
+# add axis labels and legend
+plt.xlabel('Birthweight (kg)')
+plt.legend(bbox_to_anchor = (1,1))
+plt.title('Population Data');
+```
+
+Just as with the confidence intervals we generated earlier, 95% of the time, intervals generated via bootstrapping a random sample will contain the population mean.
+
+<b> Do you believe this? </b>
+
+Let's return to our all-knowing perspective once more. Only now, let's enhance our powers. We can not only "see" the full population data, we can also rewind time. We repeat the following process:
+
+* 1. We "travel" to the point in time where the data scientist is given her random sample of 25 baby records by the hospital
+* 2. She calculates its mean, and uses bootstrap resampling to generate a confidence interval
+* 3. We use our powers to "rewind the tape" of reality, back to step 1 above.
+
+By "rewinding the tape" like this, we can see how often boostrap confidence intervals capture the population mean, for new random samples.
+
+We'll show this process using some python code:
 
 ```{python}
 # THE BIG SIMULATION: this one can take a minute or two
 
-# set up to make 20 left and right intervals
+# set up to make 20 left and right intervals, and sample means
 n_intervals = 100
-left_ends = np.zeros(n_intervals)
-right_ends = np.zeros(n_intervals)
+left_ends = np.empty(n_intervals)
+right_ends = np.empty(n_intervals)
+random_sample_means = np.empty(n_intervals)
 
+# repeat the following process, n_intervals number of times...
 for i in np.arange(n_intervals):
     
+    # tell the user how far through the simulation we are
     if i in np.arange(0, 101, 10):
         display(Markdown(f"{i}/{n_intervals} completed."))
     
-    # one trial, generating a left and right interval
+    # simulate the hospital records department taking a new random sample.
+    this_sample = babies_pop['birthweight_kg'].sample(25)
     
-    # take a new sample.
-    this_sample = babies_sample['birthweight_kg'].sample(25, replace=True)
-    
-    # get the distribution of bootstrap resample means
+    # get the distribution of bootstrap resample means, from the single new sample
     these_means = bootstrap_mean(this_sample, number_of_bootstrap_resamples)
     
-    # calculate the left, right ends
+    # calculate the left, right ends of the interval
     left_end, right_end = np.percentile(these_means, [2.5, 97.5])
     
     # store the results for this trial
     left_ends[i] = left_end
     right_ends[i] = right_end
+    random_sample_means[i] = this_sample.mean()
 
 # show when done
 display(Markdown(f"Completed!"))
 
 # put interval ends into own data frame.
-intervals = pd.DataFrame()
-intervals['Left'] = left_ends
-intervals['Right'] = right_ends
+intervals_and_means = pd.DataFrame()
+intervals_and_means['Sample Mean'] = random_sample_means
+intervals_and_means['Left'] = left_ends
+intervals_and_means['Right'] = right_ends
 ```
 
-For each of the 20 repeats, we get one (left, right) interval of
-estimates of the mean.
+For each of the 100 repeats, we get one new random sample, and new sample mean, and a new boostrapped confidence interval (bootstrap resampled from the new random sample):
 
 ```{python}
 # show the sample interval
-intervals
+intervals_and_means.round(2)
 ```
 
 The good intervals are those that contain the population mean, which we are trying to
@@ -689,16 +713,18 @@ estimate. Typically the parameter is unknown, but again, from our luxury, all-kn
 know what the population mean is.
 
 ```{python}
+# show the population mean
 population_mean
 ```
 
-How many of the 20 intervals contain the population mean? That's the number
+How many of the 100 intervals contain the population mean? That's the number
 of intervals where the left end is below the population mean and the right
 end is above.
 
 ```{python}
-intervals["Contains Population mean"] = np.logical_and(left_ends < population_mean, right_ends > population_mean)
-intervals
+# add a column to the intervals dataframe, showing if the interval captures the population mean
+intervals_and_means["Contains Population mean"] = np.logical_and(left_ends < population_mean, right_ends > population_mean)
+intervals_and_means.round(2)
 ```
 
 What percentage of the intervals contain the population mean?
@@ -706,41 +732,33 @@ What percentage of the intervals contain the population mean?
 ```{python}
 contains_population_mean_resample_intervals = np.logical_and(left_ends < population_mean, right_ends > population_mean)
 
-display(Markdown(f"{sum(contains_population_mean_resample_intervals)/len(intervals) * 100}% of the intervals contained the population mean."))
+display(Markdown(f"{sum(contains_population_mean_resample_intervals)/len(intervals_and_means) * 100}% of the intervals contained the population mean."))
 ```
 
-[We can show this graphically]
+We can show this graphically:
 
 ```{python tags=c("hide-cell")}
-plt.figure(figsize=(8,8))
+# set the figure size
+plt.figure(figsize=(10,10))
+
+# plot the boostrap confidence intervals
 for i in np.arange(len(intervals)):
-    ends = intervals[['Left', 'Right']].iloc[i]
-    plt.plot(ends, [i, i], color='gold')
+    ends = intervals_and_means[['Left', 'Right']].iloc[i]
+    plt.scatter(intervals_and_means["Sample Mean"][i], i,
+                color='red', marker = "|")
+    plt.plot(ends, [i, i], color='gold', zorder=0)
+    
+# show the population mean and add labels
 plt.axvline(population_mean,  color='blue', label = 'Population mean')
 plt.plot([], [], color = 'gold',
          label = "Intervals containing 95% of the\nbootstrapped means for a given repeat")
 plt.ylabel('Repeat Number')
 plt.yticks(np.arange(0, n_intervals+1, 5))
 plt.xlabel('Birthweight (kg)')
-plt.title('Population mean and Intervals of Estimates');
-plt.axvline(sample_mean, color = 'red', label = f"Sample Mean (= {round(sample_mean, 2)})");
+plt.title('Population mean and Intervals of Estimates')
+plt.legend(bbox_to_anchor = (1, 1));
+
 ```
-
-<b> NOTE: </b> set up a "run the tape back scenario" - we want to know how good this procedure is for capturing the population mean.
-
-Data scientist is given the random sample of 25, does the bootstrap....we "re-run the tape of reality"...how many times does her interval contain the population mean.
-
-
-Let's summarize the process of generating bootstrap confidence intervals:
-
-* (Like our data scientist) you have one random sample from a population. You want to estimate the population mean.
-* You bootstrap your random sample, to get a bootstrap resample. You calculate the mean of your boostrap resample.
-* You repeat the above step thousands of times, and get thousands of bootstrap resample means.
-* You pick off the "middle 95%" of the bootstrap sample means.
-
-That gives you one interval of estimates in which the population mean probably lies.
-
-In fact, if you repeat this *whole process* many times (e.g. generating a new confidence interval each time), then 95% of those confidence intervals will likely contain the population mean.
 
 ## Summary
 
