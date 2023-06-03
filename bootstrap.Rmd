@@ -204,7 +204,7 @@ It is important to remember that our data scientist is in the very limited posit
 
 But: we have seen that sample averages do not always capture the population average.
 
-Sometimes sample averages are higher than the population mean, sometimes they are lower than the population mean.
+Sometimes sample means are higher than the population mean, sometimes they are lower than the population mean.
 
 Sometimes the difference between the sample average from the population average is large, sometimes it is small.
 
@@ -228,7 +228,7 @@ If she knew the population mean, she wouldn't have to infer anything from her sa
 
 But, even if she doesn't know the true population mean, if she knew the amount by which sample averages vary - over repeated random sampling of the sort we've just seen in the code cells above - she could use that information to construct an *interval* in which the population mean probably lies. 
 
-Think of it this way: if our data scientist could draw many more random samples she could record the mean of each, and then see how much the means of random samples vary from each other. She knows that her first sample was also subject to this variability - if she then takes the "spread" of the sample averages, she can say "the population mean is probably my sample average, plus or minus the "spread" of the distribution of the sample averages, because that's how much variability there is when you draw repeated samples and calculate their means". 
+Think of it this way: if our data scientist could draw many more random samples she could record the mean of each, and then see how much the means of random samples vary from each other. She knows that her first sample was also subject to this variability - if she then takes the "spread" of the sample averages, she can say "the population mean is probably my sample average, plus or minus the "spread" of the distribution of all of the random sample averages, because that's how much variability there is when you draw repeated samples and calculate their means". 
 
 This interval is a *confidence interval*. It gives us a precise estimate to how big "plus or minus a bit" it, when we say "the population mean is probably our sample mean, plus or minus a bit".
 
@@ -651,17 +651,20 @@ plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population Data');
 ```
 
-Just as with the confidence intervals we generated earlier, 95% of the time, intervals generated via bootstrapping a random sample will contain the population mean.
+Just as with the confidence intervals we generated earlier from our all-knowing perspective, 95% of the time, intervals generated via bootstrapping a random sample will contain the population mean.
 
-<b> Do you believe this? </b>
+<b> But why should you believe this? </b>
 
 Let's return to our all-knowing perspective once more. Only now, let's enhance our powers. We can not only "see" the full population data, we can also rewind time. We repeat the following process:
 
 * 1. We "travel" to the point in time where the data scientist is given her random sample of 25 baby records by the hospital.
 * 2. She calculates its mean, and uses bootstrap resampling to generate a confidence interval.
-* 3. We use our powers to "rewind the tape of reality", back to step 1 above.
+* 3. From our all-knowing perspective, we're going to record if her boostrap confidence interval contains the population mean.
+* 4. We use our powers to "rewind the tape of reality", back to step 1 above.
 
-By "rewinding the tape" like this, we can see how often boostrap confidence intervals capture the population mean, for new random samples.
+By "rewinding the tape of reality" like this, we can see how often boostrap confidence intervals capture the population mean, for new random samples. You can think of this as being about "possible worlds" - as our data scientist gets different random samples, over these possible worlds, what proportion of the time do boostrap confidence intervals actually capture the population mean?
+
+**This is simulating our data scientist's scenario 100 times over - with 100 new random samples. We can then see how effective bootstrap confidence intervals would be for capturing the population mean, in each case, for each new sample.**
 
 We'll show this process using some python code:
 
@@ -705,25 +708,9 @@ big_sim_intervals_and_means['Left'] = big_sim_left_ends
 big_sim_intervals_and_means['Right'] = big_sim_right_ends
 ```
 
-For each of the 100 repeats, we get one new random sample, and new sample mean, and a new boostrapped confidence interval (bootstrap resampled from the new random sample):
+For each of the 100 repeats, we get one new random sample, and new sample mean, and a new boostrapped confidence interval (bootstrap resampled from the new random sample).
 
-```{python}
-# show the sample interval
-big_sim_intervals_and_means.round(2)
-```
-
-The good intervals are those that contain the population mean, which we are trying to
-estimate. Typically the parameter is unknown, but again, from our luxury, all-knowing perspective we happen to
-know what the population mean is.
-
-```{python}
-# show the population mean
-population_mean
-```
-
-How many of the 100 intervals contain the population mean? That's the number
-of intervals where the left end is below the population mean and the right
-end is above.
+A column is also shown indicate whether the bootstrap interval contains the population mean, in each possible world:
 
 ```{python}
 # add a column to the intervals dataframe, showing if the interval captures the population mean
