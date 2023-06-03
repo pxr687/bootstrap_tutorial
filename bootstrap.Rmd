@@ -96,17 +96,15 @@ Conversely, a "sample" is a smaller subset of the population. A *random* sample 
 
 (image from: https://statsandr.com/blog/what-is-the-difference-between-population-and-sample/)
 
-Our data scientist could simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. 
+Our data scientist could simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. Consequently, if she were to use the sample average as her estimate of the population birthweight, her estimate would have been different as well.
 
-She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. Consequently, if she were to use the sample average as her estimate of the population birthweight, her estimate would have been different as well.
-
-Because she knows that her sample is just one of many samples she could have obtained, and that different random samples would probably have different average birthweights; she also knows that its unlikely her specific sample *perfectly* captures the population mean. Her sample is just one of many potential random samples - why should she believe that her specific sample contains the best estimate of the population mean?
+Because she knows that her sample is just one of many samples she could have obtained, and that different random samples would probably have different average birthweights; she also knows that its unlikely her specific sample *perfectly* captures the population mean. Her sample is just one of many potential random samples - so why should she believe that her specific sample contains the best estimate of the population mean?
 
 Because of these concerns, she is reluctant to use the sample mean *by itself* as an estimate of the population mean.
 
 ## An all-knowing perspective
 
-Let's not just take our data scientists word here though - let's use the power of code to empirically demonstrate the principles behind her concerns.
+Let's not just take our data scientist's word here though - let's use the power of code to empirically demonstrate the principles behind her concerns.
 
 In order to do this I'd like you to imagine that WE (everyone present today) has access to the lost, full dataset. Let's imagine that there is a computer in the hospital which is not connected to the internet, and has survived the ransomware attack unscathed.
 
@@ -205,7 +203,7 @@ field_plot(babies_pop, fontsize = 8, figsize = (12,12))
 
 I've just re-run several of the code cells above multiple times, each time drawing a new random sample from the population data.
 
-It is important to remember that our data scientist is in the very limited position of essentially only having been able to run one of these cells once: she only has one random sample. She also cannot "see" the population data.
+It is important to remember that our data scientist is in the very limited position of essentially only having been able to run one of these cells once: she only has one random sample. She also cannot "see" the population data, so she must estimate the population mean from her sample data and sample mean.
 
 But: we have seen that sample averages do not always capture the population average.
 
@@ -225,7 +223,7 @@ Currently, two things things are hidden from our data scientist:
 
 - The population mean itself
 
-- The amount by which sample averages of samples of 25 babies vary from each other
+- The amount by which sample means of different random samples vary from each other
 
 If she knew the population mean, she wouldn't have to infer anything from her sample. She could just report the population mean to the rest of her reserch team, and proceed with the rest of the project.
 
@@ -379,7 +377,7 @@ for i in np.arange(number_of_repeats):
     contains_population_mean[i] = np.logical_and(left_end_of_interval < population_mean, right_end_of_interval > population_mean)
     
 # display the percentage of repeats where the interval contained the population mean
-display(Markdown(f"First, we drew 1000 random samples, and plotted a histogram of their means."))
+display(Markdown(f"First, we drew 1000 random samples from the population, and plotted a histogram of their means."))
 display(Markdown(f"Then we calculated the interval 'picking out' the middle 95% of that distribution of means."))
 display(Markdown(f"{number_of_repeats} new random samples have been drawn."))
 display(Markdown(f"For each sample, the sample mean has been calculated. And we have 'placed' the interval over each sample mean."))
@@ -389,15 +387,21 @@ display(Markdown(f"<b>{sum(contains_population_mean)/number_of_repeats * 100}% o
 We can also demonstrate this graphically - the plot below shows the 100 confidence intervals generated by the code cell above:
 
 ```{python}
+# set the figure size
 plt.figure(figsize=(10,10))
+
+# make a dataframe of confidence intervals, from the 100 repeats
 intervals = pd.DataFrame({'Left': left_intervals,
                          'Right': right_intervals})
+
+# plot each sample mean, in the centre of the interval
 for i in np.arange(len(intervals)):
     ends = intervals[['Left', 'Right']].iloc[i]
     plt.plot(ends, [i, i], color='gold', zorder=0)
     plt.scatter(one_hundred_sample_means[i], i,
                 color='red', marker = "|")
 
+# plot the population mean and add graph labels
 plt.axvline(population_mean,  color='blue', label = 'Population mean')
 plt.plot([], [], color = 'gold',
          label = "Interval containing 95% \nof the sample means our \npurple histogram above")
@@ -419,11 +423,9 @@ Our data scientist cannot do this - she cannot draw new random samples from the 
 
 # The Bootstrap
 
-We've just seen that - even if we don't know the true population mean - if we can draw multiple random samples from the population, we can build a confidence interval, within which the population mean probably lies.
+Our data scientists is in the situation a person in research is typically in: she doesn't have access to the population data, and she cannot simply draw more random samples from the population. She's limited to the one sample she has. 
 
-But our data scientists is in the situation a person in research is typically in: she cannot simply draw more random samples from the population. She's limited to the one sample she has. 
-
-Somehow,to build a confidence interval, she has to get lots of new random samples without being able to draw any new random samples from the population. This seems like an impossible situation.
+Somehow, to build a confidence interval, she has to get lots of new random samples without being able to draw any new random samples from the population. This seems like an impossible situation.
 
 Fortunately, a brilliant idea called the bootstrap can help her out here. The bootstrap let's us simulate drawing new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*. This can allow us to build confidence intervals like we've just seen: **but we do not need access to the population data in order to this, we just need our single, random sample**.
 
@@ -559,10 +561,7 @@ After running this function, we now have the we have the means from 1000 simulat
 len(bootstrap_sample_means)
 ```
 
-Here is the histogram of the 1000 means from the bootstrap resamples. The blue line is the population
-mean, which we happen to know but did not use in the bootstrap process.
-
-<b> CONSIDER REPLICATING THE PROCESS FROM ABOVE HERE - JUST GETTING THE WIDTH OF THE INTERVAL AND USING THAT TO BUILD THE CONFIDENCE INTERVAL FOR THE BIG SIMULATION </b>
+Here is the histogram of the 1000 means from the bootstrap resamples; this gives us an estimate of how much sample means (from samples of size 25) tend to vary from each other:
 
 ```{python}
 # a new dataframe for the means, obtained via resampling
@@ -572,22 +571,19 @@ resampled_means['Bootstrap Sample means'] = bootstrap_sample_means
 # plot the distribution of bootstrapped means
 resampled_means.plot.hist(color = 'purple')
 
-# show the population mean
-plt.axvline(population_mean,  color='blue', label = 'Population mean')
-
 # add title and labels to the plot
 plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resamples}) resamples')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
-## Does the distribution of bootstrap sample means capture the population mean?
+## Building a bootstrap confidence interval
 
 
-[Remember earlier, we used our "all-knowing" perspective to]
+Just to recap: earlier we used our "all-knowing" perspective to draw 1000 random samples directly from the population data. We then used the distribution of the means of those samples to build a confidence interval (using the width of the interval covering the middle 95% of the sample means.
 
-[Well, now we've done something very similar through the bootstrap resampling - only we've done it from a single sample]
+Well, now we've done something very similar through the bootstrap resampling - only we've done it from a single random sample, without accessing the population data.
 
-[We can construct an interval the same way as before...]
+We can construct an interval the same way as before:
 
 ```{python}
 left, right = np.percentile(bootstrap_sample_means, [2.5, 97.5])
@@ -595,12 +591,11 @@ print('Left:', left)
 print('Right:', right)
 ```
 
-We show the interval and the population mean on the histogram below, to see if our interval captures the population mean.
+We show the interval on the histogram of boostrap resample means:
 
 ```{python}
 # show the boostrap resample distribution, its middle 95%, and the population mean
 resampled_means.plot.hist(color = 'purple')
-plt.axvline(population_mean,  color='blue', label = 'Population mean')
 plt.plot([left, right], [5, 5], color='yellow', lw=8, zorder=1,
          label = "Interval containing 95% of the\nbootstrapped means")
 plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resamples}) resamples')
