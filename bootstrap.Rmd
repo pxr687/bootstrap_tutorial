@@ -625,6 +625,8 @@ width_from_boostrap = right_boostrap_interval - left_boostrap_interval
 width_from_boostrap
 ```
 
+**Hammer home plus or minus a bit here, using `width_from_boostrap`**
+
 ```{python}
 # show the sample mean, boostrap confidence interval, and the population data
 # plot a histogram, show the pop and pop mean

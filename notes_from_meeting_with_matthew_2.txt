@@ -1,0 +1,24 @@
+- Adapt the scenario - remove ransomware aspect. The reason the data
+scientist is limited to the sample of 25 is due to data privacy.
+
+- Too much on samples/populations at the beginning, this can be sketched
+rather than repeatedly emphasized
+
+- Add in audience participation (budget time for this)
+
+- Break down "plus or minus a bit" once we have the "spread" of the 
+sampling distribution. 
+
+	- Sample mean plus or minus SPECIFIC AMOUNT (calculated from sampling
+	distribution)
+	
+- Maybe mention that bootstrapping "automatically" centres the confidence
+interval on the sample mean
+
+- When resampling is first introduced: ask what the audience think the 
+problems might be from resampling from the sample.
+	- this is to elicit the intuition about how resampling must be done 
+	with replacement
+	
+########################################################################
+- aim to wrap up runthrough with no questions in about 15 minutes.
