@@ -26,6 +26,7 @@ pd.set_option('mode.chained_assignment', 'raise')
 # %matplotlib inline
 import matplotlib.pyplot as plt
 from population_sample_image_generator import *
+from central_limit_illustration import *
 
 # make the plots look more fancy
 plt.style.use('fivethirtyeight')
@@ -58,19 +59,12 @@ babies_sample = pd.read_csv('babies_sample.csv')
 babies_sample
 ```
 
-Because our data scientist is interested in the average (mean) birthweight, so she calculates this from her sample:
+Here is the histogram of the data scientist's sample, and along with it's sample mean:
 
 ```{python}
 # calculate the sample mean
 sample_mean = babies_sample['birthweight_kg'].mean()
 
-# show the sample mean
-sample_mean
-```
-
-She also plots the sample birthweights, to see how they are distributed, relative to the sample average:
-
-```{python}
 # plot the sample, and its mean
 plt.hist(babies_sample['birthweight_kg'], color = 'darkred')
 plt.axvline(sample_mean, color = 'red', label = f"Sample Mean (= {round(sample_mean, 2)})")
@@ -84,21 +78,9 @@ Because the full dataset is inaccessible due to the decision of the medical reco
 
 Somehow she needs to use her sample and its average birthweight to accurately estimate the population's average birthweight.
 
-### Brief aside on populations and samples
-
-It's important to clarify the terminology used I've used here. In statistics and data science, "population" refers to all the observational units (in this case, babies) that are of interest for a specific research question. In this case, the population of interest is all of the 1236 babies born at the hospital in 1960.
-
-Conversely, a "sample" is a smaller subset of the population. A *random* sample is one where each observation in the sample had an equal probability of being selected, ensuring there is no bias towards specific observations. In this case, the sample being random means that each baby had an equal chance of being selected into the sample.
-
-![](images/pop_sample_pic.png)
-
-(image from: https://statsandr.com/blog/what-is-the-difference-between-population-and-sample/)
-
-### Our data scientist's concerns (about using her sample mean to estimate the population mean)
-
 Our data scientist could simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. Consequently, if she were to use the sample average as her estimate of the population birthweight, her estimate would have been different as well.
 
-Because she knows that her sample is just one of many samples she could have obtained, and that different random samples would probably have different average birthweights; she also knows that its unlikely her specific sample *perfectly* captures the population mean. Her sample is just one of many potential random samples - so why should she believe that her specific sample contains the best estimate of the population mean?
+If her estimate very easily could have been different, then why should she believe that her specific sample contains the best estimate of the population mean?
 
 Because of these concerns, she is reluctant to use the sample mean *by itself* as an estimate of the population mean.
 
@@ -774,6 +756,23 @@ BUT if we're in a real world situation - with no access to the full population d
 
 We have seen that boostrap confidence intervals will capture the population mean around 95% of the time, over many new random samples...
 
+## If there is time: "why are the sampling distributions normal?' - the Central Limit Theorem
+
+```{python}
+# print an explanation of the graph
+display(Markdown("""Inspired by Agresti, Statistical Methods for 
+                 the Social Sciences, 2018, 5th Ed., pg.100"""))
+display(Markdown("""
+An illustration of the central limit theorem. 
+The code repeatedly draws samples (of three different sizes) from a set of
+underlying population distributions (some of which are very non-normal).
+A plot is then created showing that the sampling distribution of the mean gets
+more precise and more normal as the sample size increases,
+regardless of the (non)normality of the underlying population."""))
+
+# show the graph
+plot_CTL_illustration()
+```
 
 *Note*: This page has content from the [Bootstrap](https://github.com/data-8/textbook/blob/64b20f0/notebooks/Bootstrap.ipynb)
 notebook of an older version of the [UC Berkeley data science course](https://inferentialthinking.com/). See the Berkeley course section of the [license file](https://uob-ds.github.io/cfd2021/license).
