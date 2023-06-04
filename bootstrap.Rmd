@@ -135,7 +135,7 @@ The code cell below draws a random sample from the population data:
 new_sample = babies_pop.sample(25)
 
 # show the new sample and the mean
-display(Markdown(f"\nNew sample mean = {np.mean(new_sample).round(2)}"))
+display(Markdown(f"\nNew sample mean = {np.mean(new_sample['birthweight_kg']).round(2)}"))
 display(new_sample.round(2))
 ```
 
