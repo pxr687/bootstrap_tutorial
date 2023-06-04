@@ -1,7 +1,7 @@
 # README
 
 If you are coding along with the presentation, the file you need is 
-`bootstrap.ipynb`
+`bootstrap.ipynb`.
 
 ## Description of files/folders
 
