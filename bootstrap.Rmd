@@ -53,7 +53,7 @@ At the moment, she only has her random sample of 25 babies, which is shown as th
 
 ```{python}
 # load in the sample data (this IS real data!)
-babies_sample = pd.read_csv('babies_sample.csv')
+babies_sample = pd.read_csv('data/babies_sample.csv')
 
 # show the sample data
 babies_sample
@@ -97,7 +97,7 @@ Here is the full dataset, containing the birthweights of all babies born in 1960
 
 ```{python}
 # load in the population data
-babies_pop = pd.read_csv('babies.csv')
+babies_pop = pd.read_csv('data/babies.csv')
 
 # show the data
 babies_pop
