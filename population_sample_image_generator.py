@@ -7,7 +7,8 @@ from IPython.display import display, Markdown
 
 def field_plot(babies_pop, fontsize = 8, figsize = (12,12), 
                fontweight = "ultralight"):
-  """Generates a plot that shows the population data, and random sampling, in real time."""
+    """Generates a plot that shows the population data, and random sampling,
+    in real time."""
 
     n_rows = 103
     n_cols = 12
