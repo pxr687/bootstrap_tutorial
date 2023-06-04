@@ -25,6 +25,8 @@ from IPython.display import display, Markdown
 pd.set_option('mode.chained_assignment', 'raise')
 # %matplotlib inline
 import matplotlib.pyplot as plt
+import sys
+sys.path.append("src/")
 from population_sample_image_generator import *
 from central_limit_illustration import *
 

@@ -9,14 +9,11 @@ If you are coding along with the presentation, the file you need is
 
 `bootstrap.Rmd` - .Rmd version of the presentation notebook (requires Jupytext)
 
-`central_limit_illustration.py` - custom python module for generating a CTL 
-illustration
-
 `data/` - data used in the presentation notebook
 
 `images/` - folder of images used in the presentation notebook
 
-`population_sample_image_generator.py`- custom python module for generating a 
-"field plot", used in the presentation
-
 `README.md` - this README file.
+
+`src/` - contains custom python modules for the "field plot" and CTL 
+illustration used in the presentation notebook.
