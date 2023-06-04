@@ -20,7 +20,6 @@ jupyter:
 import numpy as np
 import pandas as pd
 from IPython.display import display, Markdown
-
 # safe settings for Pandas
 pd.set_option('mode.chained_assignment', 'raise')
 # %matplotlib inline
@@ -745,12 +744,6 @@ plt.title('Population mean and Boostrapped Intervals')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
-### Why does boostrapping work?
-
-Why is this a good idea? On average, **random samples tend to resemble the population...so random bootstrap resamples of the sample tend to resemble the population as well**. This entails that when we generate bootstrap resamples, they provide pretty good estimates of how much the means of random samples tend to vary from each other (and this is in the information we need to build our confidence interval!).
-
-![](images/bootstrap_pic_2.png)
-
 ## Summary
 
 If we are in a godlike, all-knowing perspective, of having access to population data, we can construct confidence intervals by drawing many random samples from the population data. We can then plot the distribution of means from these samples, and then use the "width" of this distribution to construct confidence intervals...
@@ -767,8 +760,14 @@ We have seen that boostrap confidence intervals will capture the population mean
 <!-- #region -->
 # If there is time: 
 
+### Why does boostrapping work?
 
-## "Why are the sampling distributions normal?' - the Central Limit Theorem
+Why is this a good idea? On average, **random samples tend to resemble the population...so random bootstrap resamples of the sample tend to resemble the population as well**. This entails that when we generate bootstrap resamples, they provide pretty good estimates of how much the means of random samples tend to vary from each other (and this is in the information we need to build our confidence interval!).
+
+![](images/bootstrap_pic_2.png)
+
+
+### "Why are the sampling distributions normal?' - the Central Limit Theorem
 <!-- #endregion -->
 
 ```{python}
@@ -787,7 +786,7 @@ regardless of the (non)normality of the underlying population."""))
 plot_CTL_illustration()
 ```
 
-## What if we bootstrap from an unrepresentative sample?
+### What if we bootstrap from an unrepresentative sample?
 
 A good way to think of boostrapping is this: over multiple labs and research projects trying to estimate the same population parameter (mean, median, odds ratio etc.), bootstrap confidence intervals will contain the population mean 95% of the time (as a proportion of the total research projects).
 
