@@ -46,7 +46,7 @@ Her task is to calculate the average birthweight of babies born at a small hospi
 
 However, the data scientist is in a predicament.  Initially, she was granted access to a random sample of 25 baby records whilst awaiting clearance from the hospital's medical records department to access the complete dataset. The complete dataset includes the birthweights for all 1236 babies born at that hospital in 1960.
 
-But disaster has struck, and the hospital's medical records department has been subject to a ransomware attack, and so the full dataset is inaccessible, for a indeterminate period of time. (Alas, research rarely goes to plan!).
+But disaster has struck, and the hospital's medical records department are refusing the data scientist access to the full dataset. (Alas, research rarely goes to plan!).
 
 At the moment, she only has her random sample of 25 babies, which is shown as the output of the code cell below:
 
@@ -80,9 +80,11 @@ plt.legend(bbox_to_anchor = (1,1));
 ```
 
 <!-- #region -->
-Because the full dataset is inaccessible due to the ransomware attack, the random sample of 25 birthweights is the only evidence our data scientist has about mean birthweight in 1960. However, she doesn't care specifically about the mean birthweight of this random sample of 25 babies; *she cares about the mean birthweight of all 1236 babies born in 1960, at this particular hospital*. Let's refer to these 1236 babies as the *population* she is interested in.
+Because the full dataset is inaccessible due to the decision of the medical records department, the random sample of 25 birthweights is the only evidence our data scientist has about mean birthweight in 1960. However, she doesn't care specifically about the mean birthweight of this random sample of 25 babies; *she cares about the mean birthweight of all 1236 babies born in 1960, at this particular hospital*. Let's refer to these 1236 babies as the *population* she is interested in.
 
 Somehow she needs to use her sample and its average birthweight to accurately estimate the population's average birthweight.
+
+### Brief aside on populations and samples
 
 It's important to clarify the terminology used I've used here. In statistics and data science, "population" refers to all the observational units (in this case, babies) that are of interest for a specific research question. In this case, the population of interest is all of the 1236 babies born at the hospital in 1960.
 
@@ -91,6 +93,8 @@ Conversely, a "sample" is a smaller subset of the population. A *random* sample 
 ![](images/pop_sample_pic.png)
 
 (image from: https://statsandr.com/blog/what-is-the-difference-between-population-and-sample/)
+
+### Our data scientist's concerns (about using her sample mean to estimate the population mean)
 
 Our data scientist could simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. Consequently, if she were to use the sample average as her estimate of the population birthweight, her estimate would have been different as well.
 
@@ -102,9 +106,7 @@ Because of these concerns, she is reluctant to use the sample mean *by itself* a
 
 Let's not just take our data scientist's word here though - let's use the power of code to empirically demonstrate the principles behind her concerns.
 
-In order to do this I'd like you to imagine that WE (everyone present today) has access to the lost, full dataset. Let's imagine that there is a computer in the hospital which is not connected to the internet, and has survived the ransomware attack unscathed.
-
-But only WE know the password to this hallowed computer, and so only WE can view the full dataset.
+In order to do this I'd like you to imagine that we (everyone present today) has access to the full dataset. Let's imagine we work in another department at the hospital, and we do have clearance to view the full data. (**But** we're not allowed to share the population data - or anything derived from the population data - with anyone outside of the hospital).
 
 Here is the full dataset, containing the birthweights of all babies born in 1960 at the hospital:
 <!-- #endregion -->
@@ -152,11 +154,7 @@ display(Markdown(f"\nNew sample mean = {np.mean(new_sample).round(2)}"))
 display(new_sample.round(2))
 ```
 
-Another way of showing this process of random sampling is to use something I like to call a "field plot" (just my name for it!). Imagine you're hovering in the sky, looking down on a field. In it are all the 1236 babies in the population are sitting in perfect lines (12 lines, with 103 babies in each). 
-
-The graph below on the left shows these lines (viewed from above) and in the location of each baby, the birthweight of that baby is displayed. The graph on the left shows all of the birthweights for all 1236 babies.
-
-The graph on the right shows a random sample of 25 of the baby birthweights (highlighted in red):
+Let's look at this process of drawing random samples another way. The graph on the left below shows the full population of baby birthweights; the graph on the right shows a random sample of 25 of the baby birthweights (highlighted in red):
 
 ```{python}
 # this is a custom function, as the code to produce this plot is quite long...
@@ -201,9 +199,9 @@ We can see that from each new random sample, sometimes we get a good estimate of
 
 I've just re-run several of the code cells above multiple times, each time drawing a new random sample from the population data.
 
-It is important to remember that our data scientist is in the very limited position of essentially only having been able to run one of these cells once: she only has one random sample. She also cannot "see" the population data, so she must estimate the population mean from her sample data and sample mean.
+Our data scientist, however, is the situation researchers are typically in: she has one random sample, and is not able to draw new random samples from the population at will. She has to estimate the population mean using the mean of her one, single sample.
 
-But: we have seen that sample averages do not always capture the population average.
+But: from our all-knowing perspective, we have seen that sample averages do not always capture the population average.
 
 Sometimes sample means are higher than the population mean, sometimes they are lower than the population mean.
 
@@ -302,7 +300,7 @@ width_of_interval = right_interval - left_interval
 width_of_interval 
 ```
 
-What can we do with this interval?
+<b> What can we do with this interval? </b>
 
 The code cell below draws a new random sample and shows its mean.
 
@@ -340,7 +338,17 @@ You can see that the interval we obtained from the sampling distribution contain
 
 **If our data scientist knew this interval - even if she didn't know the population mean - she could present this interval alongside her sample mean, and tell her colleagues: "the population mean is probably within this interval around my sample mean".**
 
-The cell below repeats the code from the cell above 100 times (apart from plotting the graphs!), and it shows the proportion of times over all 1000 repeats that the interval around the sample mean contained the population mean.
+```{python}
+# minus "a bit"
+- width_of_interval/2
+```
+
+```{python}
+# plus "a bit"
++ width_of_interval/2
+```
+
+The cell below repeats the code from the cell (entitled "Population, Sample and Confidence Interval") above 100 times (apart from plotting the graph!), and it shows the proportion of times over all 100 repeats that the interval around the sample mean contained the population mean
 
 ```{python}
 # set the number of repeats
@@ -377,19 +385,8 @@ for i in np.arange(number_of_repeats):
     
     # work out if the interval contains the population mean
     contains_population_mean[i] = np.logical_and(left_end_of_interval < population_mean, right_end_of_interval > population_mean)
-    
-# display the percentage of repeats where the interval contained the population mean
-display(Markdown(f"First, from our 'all-knowing' perspective we drew 1000 random samples from the population, and plotted a histogram of their means."))
-display(Markdown(f"Then we calculated the interval 'picking out' the middle 95% of that distribution of means."))
-display(Markdown(f"Then, we drew {number_of_repeats} NEW random samples."))
-display(Markdown(f"For each new sample, the sample mean has been calculated. And we have 'placed' the interval over each sample mean."))
-display(Markdown(f"<b>{sum(contains_population_mean)/number_of_repeats * 100}% of these intervals, centred on each new sample mean, contained the population mean.</b>"))
-```
 
-We can also demonstrate this graphically - the plot below shows the 100 confidence intervals generated by the code cell above:
-
-```{python}
-# set the figure size
+    # set the figure size
 plt.figure(figsize=(10,10))
 
 # make a dataframe of confidence intervals, from the 100 repeats
@@ -413,15 +410,22 @@ plt.ylabel('Repeat Number')
 plt.yticks(np.arange(0, len(intervals)+1, 5))
 plt.title('Population Mean and Confidence Intervals\n(All-knowing perspective)')
 plt.legend(bbox_to_anchor = (1, 1));
+
+# display the percentage of repeats where the interval contained the population mean
+display(Markdown(f"First, from our 'all-knowing' perspective we drew 1000 random samples from the population, and plotted a histogram of their means."))
+display(Markdown(f"Then we calculated the interval 'picking out' the middle 95% of that distribution of means."))
+display(Markdown(f"Then, we drew {number_of_repeats} NEW random samples."))
+display(Markdown(f"For each new sample, the sample mean has been calculated. And we have 'placed' the interval over each sample mean."))
+display(Markdown(f"<b>{sum(contains_population_mean)/number_of_repeats * 100}% of these intervals, centred on each new sample mean, contained the population mean.</b>"))
 ```
 
 This is meaning of a confidence interval - over repeated random samples drawn from the population, the interval will contain the population mean around 95% of the time.
 
-So, even if our data scientist didn't know the population mean, if she had access to this interval - let's say we, from our all-knowing perspective give it to her - she could present it alongside her sample mean and confidently inform her colleagues that the population mean is likely within this interval, centered around her sample mean.
+So, even if our data scientist didn't know the population mean, if she had access to this interval she could present it alongside her sample mean and confidently inform her colleagues that the population mean is likely within this interval, centered around her sample mean.
 
 *But* - and this is a huge but - we obtained our confidence interval here only because we are in the godlike, all-knowing position of being able to access the whole population data, and so we were able to build our confidence interval by repeatedly drawing random samples from the population. This told us how much the means of random samples typically vary from each other, and we used that spread to construct our confidence interval.
 
-Our data scientist cannot do this - she cannot draw new random samples from the population data she cannot access. So what is she to do?
+Our data scientist cannot do this - she cannot draw new random samples from the population data she cannot access. And we're not allowed to share the interval with her. So what is she to do?
 
 # The Bootstrap
 
@@ -451,7 +455,7 @@ samples from the population:
 
 So let's just break that down: to get our new sample - I'll refer to this as a "bootstrap resample" - we select a baby at random from our original sample and record their birthweight. We then put that baby's record back in with the other records in the sample and then draw again at random. We do this until we have a new sample of 25 birthweights.
 
-#### Why do we resample WITH replacement?
+### Why do we resample WITH replacement?
 
 If we drew 25 times at random *without* replacement from our sample of size
 25, we would just get the same sample back. By drawing *with* replacement, we
@@ -459,14 +463,14 @@ create the possibility for the new samples to be different from the original,
 because some babies might be drawn more than once and others not at all.
 
 
-#### Why does each resample have to be the same size as the original sample?
+### Why does each resample have to be the same size as the original sample?
 
 It is important that the bootstrap resample is the same size as the original sample
 size. Since our original sample consisted of 25 babies, our sample
 mean was based on 25 babies. To see how different the sample mean could have
 been, we have to compare it to the mean of other samples of size 25.
 
-#### Why does boostrapping work?
+### Why does boostrapping work?
 
 Why is this a good idea? On average, **random samples tend to resemble the population...so random bootstrap resamples of the sample tend to resemble the population as well**. This entails that when we generate bootstrap resamples and calculate their means, these means provide pretty good estimates of the population mean. They also provide pretty good estimates of how much the means of random samples tend to vary from each other (and this is in the information we need to build our confidence interval!).
 
@@ -474,7 +478,6 @@ Why is this a good idea? On average, **random samples tend to resemble the popul
 <!-- #endregion -->
 
 ## A resampled mean
-
 
 To get a bootstrap resample, we want a sample the same size as the original sample (25 babies), where we are
 sampling *with replacement*. 
@@ -625,7 +628,15 @@ width_from_boostrap = right_boostrap_interval - left_boostrap_interval
 width_from_boostrap
 ```
 
-**Hammer home plus or minus a bit here, using `width_from_boostrap`**
+```{python}
+# minus "a bit" (from boostrap)
+- width_from_boostrap/2
+```
+
+```{python}
+# plus "a bit" (from boostrap)
++ width_from_boostrap/2
+```
 
 ```{python}
 # show the sample mean, boostrap confidence interval, and the population data
@@ -718,22 +729,16 @@ For each of the 100 repeats, we get one new random sample, and new sample mean, 
 
 A column is also shown indicate whether the bootstrap interval contains the population mean, in each possible world:
 
-```{python}
-# add a column to the intervals dataframe, showing if the interval captures the population mean
-big_sim_intervals_and_means["Contains Population Mean"] = np.logical_and(big_sim_intervals_and_means['Left'] < population_mean,
-                                                                         big_sim_intervals_and_means['Right'] > population_mean)
-big_sim_intervals_and_means.round(2)
-```
 
 What percentage of the intervals contain the population mean?
 
-```{python}
-display(Markdown(f"{big_sim_intervals_and_means['Contains Population Mean'].sum()/len(big_sim_intervals_and_means) * 100}% of the intervals contained the population mean."))
-```
-
-We can show this graphically:
-
 ```{python tags=c("hide-cell")}
+# add a column to the intervals dataframe, showing if the interval captures the population mean
+big_sim_intervals_and_means["Contains Population Mean"] = np.logical_and(big_sim_intervals_and_means['Left'] < population_mean,
+                                                                         big_sim_intervals_and_means['Right'] > population_mean)
+# show the percentage of boostrapped intervals which contain the mean
+display(Markdown(f"{big_sim_intervals_and_means['Contains Population Mean'].sum()/len(big_sim_intervals_and_means) * 100}% of the intervals contained the population mean."))
+
 # set the figure size
 plt.figure(figsize=(10,10))
 
