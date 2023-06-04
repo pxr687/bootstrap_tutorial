@@ -5,13 +5,13 @@ If you are coding along with the presentation, the file you need is
 
 ## Description of files/folders
 
-`bootstrap.ipynb` - the main presentation notebook
+`bootstrap.ipynb` - the main presentation notebook.
 
-`bootstrap.Rmd` - .Rmd version of the presentation notebook (requires Jupytext)
+`bootstrap.Rmd` - .Rmd version of the presentation notebook (requires Jupytext).
 
-`data/` - data used in the presentation notebook
+`data/` - data used in the presentation notebook.
 
-`images/` - folder of images used in the presentation notebook
+`images/` - folder of images used in the presentation notebook.
 
 `README.md` - this README file.
 
