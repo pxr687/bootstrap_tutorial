@@ -15,7 +15,7 @@ jupyter:
     name: python3
 ---
 
-```{python tags=c("hide-cell")}
+```{python}
 # don't change this cell; just run it
 import numpy as np
 import pandas as pd
