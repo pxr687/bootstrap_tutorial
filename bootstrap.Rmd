@@ -791,7 +791,7 @@ A good way to think of boostrapping is this: over multiple labs and research pro
 
 Because sampling is random, a given sample in a given research project may be unrepresentative. Bootstrapping cannot fix this is issue. **This is why replication and open science are so important!**.
 
-However, for any sample we have, confidence intervals provide the best guide available to where the population parameter is.
+A small proportion of the time we will be wrong, even with perfectly random sampling. However, for any sample we have, confidence intervals provide the best guide available to where the population parameter is. Over repeated replications, we will be right most of the time, if we trust the confidence intervals...
 
 More from Stack Exchange: https://stats.stackexchange.com/questions/157639/bootstrapping-wont-always-return-population-statistics-so-why-say-it-does
 
