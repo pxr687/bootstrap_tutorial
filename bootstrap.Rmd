@@ -78,7 +78,9 @@ Because the full dataset is inaccessible due to the decision of the medical reco
 
 Somehow she needs to use her sample and its average birthweight to accurately estimate the population's average birthweight.
 
-Our data scientist could simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. Consequently, if she were to use the sample average as her estimate of the population birthweight, her estimate would have been different as well.
+> <b> Question: </b>: can our data scientist simply present her sample average as an estimate of the population average?
+
+Our data scientist *could* simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. Consequently, if she were to use the sample average as her estimate of the population birthweight, her estimate would have been different as well.
 
 If her estimate very easily could have been different, then why should she believe that her specific sample contains the best estimate of the population mean?
 
@@ -419,6 +421,8 @@ Fortunately, a brilliant idea called the bootstrap can help her out here. The bo
 
 This may seem like a sleight of hand, but hopefully I can convince you it works!
 
+> <b> Question: </b>: before we look at the mechanics of the boostrap, can anyone see any problems that might arise from resampling the sample?
+
 We will now see how and why the bootstrap works. Let's first remind ourselves what the data scientists single random sample looks like:
 
 ```{python}
@@ -452,11 +456,7 @@ size. Since our original sample consisted of 25 babies, our sample
 mean was based on 25 babies. To see how different the sample mean could have
 been, we have to compare it to the mean of other samples of size 25.
 
-### Why does boostrapping work?
-
-Why is this a good idea? On average, **random samples tend to resemble the population...so random bootstrap resamples of the sample tend to resemble the population as well**. This entails that when we generate bootstrap resamples and calculate their means, these means provide pretty good estimates of the population mean. They also provide pretty good estimates of how much the means of random samples tend to vary from each other (and this is in the information we need to build our confidence interval!).
-
-![](images/bootstrap_pic.png)
+![](images/bootstrap_pic_1.png)
 <!-- #endregion -->
 
 ## A resampled mean
@@ -742,6 +742,12 @@ plt.xlabel('Birthweight (kg)')
 plt.title('Population mean and Boostrapped Intervals')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
+
+### Why does boostrapping work?
+
+Why is this a good idea? On average, **random samples tend to resemble the population...so random bootstrap resamples of the sample tend to resemble the population as well**. This entails that when we generate bootstrap resamples, they provide pretty good estimates of how much the means of random samples tend to vary from each other (and this is in the information we need to build our confidence interval!).
+
+![](images/bootstrap_pic_2.png)
 
 ## Summary
 
