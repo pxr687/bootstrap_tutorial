@@ -44,7 +44,7 @@ notebook of an older version of the [UC Berkeley data science course](https://in
 
 Consider this scenario: a data scientist has been asked to help with a research project in the field of historical epidemiology - analysing historical datasets related to health. 
 
-Her task is to calculate the average birthweight of babies born at a small hospital in Oakland, California in the year 1960. She is to do this in order to later test the hypothesis that babies born at this hospital in this year were underweight, relative to the national average at that time. (For now though, she is only interested in calculating the average birthweight at the hospital, in 1960).
+Her task is to calculate the average birthweight of babies born at a small hospital in Oakland, California in the year 1960. She is to do this in order to later test the hypothesis that babies born at this hospital in this year were underweight, relative to the national average at that time. (For now though, she is only interested in calculating the average birthweight of all the babies born at the hospital, in 1960).
 
 However, the data scientist is in a predicament.  Initially, she was granted access to a random sample of 25 baby records whilst awaiting clearance from the hospital's medical records department to access the complete dataset. The complete dataset includes the birthweights for all 1236 babies born at that hospital in 1960.
 
@@ -91,7 +91,7 @@ Because of these concerns, she is reluctant to use the sample mean *by itself* a
 
 Let's not just take our data scientist's word here though - let's use the power of code to empirically demonstrate the principles behind her concerns.
 
-In order to do this I'd like you to imagine that we (everyone present today) has access to the full dataset. Let's imagine we work in another department at the hospital, and we do have clearance to view the full data. (**But** we're not allowed to share the population data - or anything derived from the population data - with anyone outside of the hospital).
+In order to do this I'd like you to imagine that we (everyone present today) do have access to the full dataset. Let's imagine we work in another department at the hospital, and we do have clearance to view the full data. (**But** we're not allowed to share the population data - or anything derived from the population data - with anyone outside of the hospital).
 
 Here is the full dataset, containing the birthweights of all babies born in 1960 at the hospital:
 <!-- #endregion -->
@@ -128,11 +128,15 @@ From our seemingly all-knowing position of being able to "see" the full populati
 
 Further - because we have access to the population data - we can do this as many times as we like, so we can not only see how far off each sample average is from the actual population mean, we can also build an intuition as to how much sample averages vary as we draw lots of random samples (highlighting the issue our data scientist is concerned by).
 
-The code cell below draws a random sample from the population data.  The graph on the left below shows the full population of baby birthweights; the graph on the right shows a random sample of 25 of the baby birthweights (highlighted in red):
+The code cell below draws a random sample from the population data:
 
 ```{python}
-# this is a custom function, as the code to produce this plot is quite long...
-field_plot(babies_pop, fontsize = 8, figsize = (12,12))
+# draw a new sample
+new_sample = babies_pop.sample(25)
+
+# show the new sample and the mean
+display(Markdown(f"\nNew sample mean = {np.mean(new_sample['birthweight_kg']).round(2)}"))
+display(new_sample.round(2))
 ```
 
 From our omniscient perspective, let's draw another random sample and let's plot it against the population data, so we can see graphically how close or far our sample average is from the population average.
