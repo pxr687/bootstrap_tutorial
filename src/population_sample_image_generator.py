@@ -44,7 +44,7 @@ def field_plot(babies_pop, fontsize = 8, figsize = (12,12),
             if count not in sample_indexes:
                 plt.text(j, i,
                         babies_pop['birthweight_kg'].iloc[count].round(1).astype("str"),
-                         ha='center', va='center',
+                        ha='center', va='center',
                         size = fontsize,
                         color='grey',
                         weight= fontweight,
