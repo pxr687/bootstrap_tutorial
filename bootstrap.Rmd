@@ -48,7 +48,7 @@ Her task is to calculate the average birthweight of babies born at a small hospi
 
 However, the data scientist is in a predicament.  Initially, she was granted access to a random sample of 25 baby records whilst awaiting clearance from the hospital's medical records department to access the complete dataset. The complete dataset includes the birthweights for all 1236 babies born at that hospital in 1960.
 
-But disaster has struck, and the hospital's medical records department are refusing the data scientist access to the full dataset. (Alas, research rarely goes to plan!).
+But disaster has struck, and the hospital's medical records department are refusing the data scientist access to the full dataset, owing to concerns about data privacy. (Alas, research rarely goes to plan!).
 
 At the moment, she only has her random sample of 25 babies, which is shown as the output of the code cell below:
 
@@ -128,18 +128,7 @@ From our seemingly all-knowing position of being able to "see" the full populati
 
 Further - because we have access to the population data - we can do this as many times as we like, so we can not only see how far off each sample average is from the actual population mean, we can also build an intuition as to how much sample averages vary as we draw lots of random samples (highlighting the issue our data scientist is concerned by).
 
-The code cell below draws a random sample from the population data:
-
-```{python}
-# draw a new sample
-new_sample = babies_pop.sample(25)
-
-# show the new sample and the mean
-display(Markdown(f"\nNew sample mean = {np.mean(new_sample['birthweight_kg']).round(2)}"))
-display(new_sample.round(2))
-```
-
-Let's look at this process of drawing random samples another way. The graph on the left below shows the full population of baby birthweights; the graph on the right shows a random sample of 25 of the baby birthweights (highlighted in red):
+The code cell below draws a random sample from the population data.  The graph on the left below shows the full population of baby birthweights; the graph on the right shows a random sample of 25 of the baby birthweights (highlighted in red):
 
 ```{python}
 # this is a custom function, as the code to produce this plot is quite long...
@@ -177,12 +166,10 @@ plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population & Sample');
 ```
 
-We can see that from each new random sample, sometimes we get a good estimate of the population mean, sometimes we get a bad estimate.
-
 <!-- #region -->
 ## Plus or minus a bit
 
-I've just re-run several of the code cells above multiple times, each time drawing a new random sample from the population data.
+I've just re-run several of the code cells above multiple times, each time drawing a new random sample from the population data. We can see that from each new random sample, sometimes we get a good estimate of the population mean, sometimes we get a bad estimate.
 
 Our data scientist, however, is the situation researchers are typically in: she has one random sample, and is not able to draw new random samples from the population at will. She has to estimate the population mean using the mean of her one, single sample.
 
@@ -206,11 +193,11 @@ Currently, two things that would be relevant for answering this question are hid
 
 - The population mean itself
 
-- The amount by which sample means from different random samples vary from each other
+- The amount by which sample means from different random samples typically vary from each other
 
 If she knew the population mean, she wouldn't have to infer anything from her sample. She could just report the population mean to the rest of her reserch team, and proceed with the rest of the project.
 
-But, even if she doesn't know the true population mean, if she knew the amount by which sample averages vary - over repeated random sampling of the sort we've just seen in the code cells above - she could use that information to construct an *interval* in which the population mean probably lies. 
+But, even if she didn't know the true population mean, if she knew the amount by which sample averages vary - over repeated random sampling of the sort we've just seen in the code cells above - she could use that information to construct an *interval* in which the population mean probably lies. 
 
 Think of it this way: if our data scientist could draw many more random samples she could record the mean of each, and then see how much the means of random samples vary from each other. She knows that her first sample was also subject to this variability - if she then takes the "spread" of the sample averages, she can say "the population mean is probably my sample average, plus or minus the "spread" of the distribution of all of the random sample averages, because that's how much variability there is when you draw repeated samples and calculate their means". 
 
