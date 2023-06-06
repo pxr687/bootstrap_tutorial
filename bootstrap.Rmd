@@ -77,7 +77,7 @@ plt.legend(bbox_to_anchor = (1,1));
 ```
 
 <!-- #region -->
-Now, our she doesn't care specifically about the mean birthweight of this random sample of 25 babies; *she cares about the mean birthweight of all 1236 babies born in 1960, at this particular hospital*. Let's refer to these 1236 babies as the *population* she is interested in.
+Now, our she doesn't care specifically about the mean birthweight of this random sample of 25 babies; *she cares about the mean birthweight of all 1236 babies born in 1960, at the hospital*. Let's refer to these 1236 babies as the *population* she is interested in.
 
 Somehow she needs to use her sample and its average birthweight to accurately estimate the population's average birthweight.
 
@@ -93,7 +93,7 @@ Because of these concerns, she is reluctant to use the sample mean *by itself* a
 
 Let's not just take our data scientist's word here though - let's use the power of code to empirically demonstrate the principles behind her concerns.
 
-In order to do this I'd like you to imagine that we (everyone present today) do have access to the full dataset. Let's imagine we work in another department at the hospital, and we do have clearance to view the full data. (**But** we're not allowed to share the population data - or anything derived from the population data - with anyone outside of the hospital).
+In order to do this I'd like you to imagine that we (everyone present today) do have access to the full dataset. Let's imagine we work in another department at the hospital, and we can view the full data. (**But** we're not allowed to share the population data - or anything derived from the population data - with anyone outside of the hospital).
 
 Here is the full dataset, containing the birthweights of all babies born in 1960 at the hospital:
 <!-- #endregion -->
@@ -197,7 +197,7 @@ Currently, two things that would be relevant for answering this question are hid
 
 If she knew the population mean, she wouldn't have to infer anything from her sample. She could just report the population mean to the rest of her reserch team, and proceed with the rest of the project.
 
-But, even without knowing the true population mean, if our data scientist could generate multiple random samples and calculate the mean for each, she could observe the variation among these sample means. By considering the range or 'spread' of these sample means, she could construct an interval in which the population mean probably lies, as she knows that spread represents the other random samples that she easily could have got.
+But, even without knowing the true population mean, if our data scientist could generate multiple random samples and calculate the mean for each, she could see how much these sample means vary from each other. By considering the range or 'spread' of these sample means, she could construct an interval in which the population mean probably lies, as she knows that spread represents the other random samples that she easily could have got.
 
 This interval is a *confidence interval*. It gives us a precise estimate to how big "plus or minus a bit" is, when we say "the population mean is probably our sample mean, plus or minus a bit".
 
@@ -391,13 +391,11 @@ This is meaning of a confidence interval - over repeated random samples drawn fr
 
 *But* - and this is a huge but - we obtained our confidence interval here only because we are in the godlike, all-knowing position of being able to access the whole population data, and so we were able to build our confidence interval by repeatedly drawing random samples from the population. This told us how much the means of random samples typically vary from each other, and we used that spread to construct our confidence interval.
 
-Our data scientist cannot do this - she cannot draw new random samples from the population data she cannot access. And we're not allowed to share the interval with her. So what is she to do?
+But, our data scientist cannot do this. She is in the situation a person in research is typically in: she doesn't have access to the population data, so she cannot simply draw more random samples from the population to build a confidence interval in the way we've just seen. She's limited to just he one sample she has. So what is she to do? 
 
 # The Bootstrap
 
-Our data scientist is in the situation a person in research is typically in: she doesn't have access to the population data, and she cannot simply draw more random samples from the population to build a confidence interval in the way we've just seen. She's limited to just he one sample she has. 
-
-Fortunately, a brilliant idea called the bootstrap can help her out here. The bootstrap let's us simulate drawing new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*. This can allow us to build confidence intervals like we've just seen: **but we do not need access to the population data in order to this, we just need our single, random sample**.
+Fortunately, a brilliant idea called the bootstrap can help her out here. The bootstrap let's us simulate drawing many new random samples by a method called *resampling*: the new samples are drawn at random *from the original sample*. This can allow us to build confidence intervals like we've just seen: **but we do not need access to the population data in order to this, we just need our single, random sample**.
 
 This may seem like a sleight of hand, but hopefully I can convince you it works!
 
