@@ -622,7 +622,7 @@ plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population Data');
 ```
 
-Just as with the confidence intervals we generated earlier from our all-knowing perspective, 95% of the time, intervals generated via bootstrapping a random sample will contain the population mean. This allows our data scientist to make a claim to her colleagues like: "the population mean is probably within this boostrap confidence interval, centred on my sample mean" (and in this case, she would have been right!). 
+Just as with the confidence intervals we generated earlier from our all-knowing perspective, 95% of the time intervals generated via bootstrapping (from a single random sample) will contain the population mean. This allows our data scientist to make a claim to her colleagues like: "the population mean is probably within this boostrap confidence interval, centred on my sample mean" (and in this case, she would have been right!). 
 
 > <b> Question </b>:  Do you believe bootstrap resampling generates confidence intervals that "work" as well as the ones we generated earlier, from our all-knowing perspective? E.g. will boostrap confidence intervals capture the population mean the same proportion of the time?
 
@@ -679,12 +679,7 @@ big_sim_intervals_and_means['Left'] = big_sim_left_ends
 big_sim_intervals_and_means['Right'] = big_sim_right_ends
 ```
 
-For each of the 100 repeats, we get one new random sample, and new sample mean, and a new boostrapped confidence interval (bootstrap resampled from the new random sample).
-
-A column is also shown indicate whether the bootstrap interval contains the population mean, in each possible world:
-
-
-What percentage of the intervals contain the population mean?
+For each of the 100 repeats, we get one new random sample, and new sample mean, and a new boostrapped confidence interval (bootstrap resampled from the new random sample). What percentage of the intervals contain the population mean?
 
 ```{python tags=c("hide-cell")}
 # add a column to the intervals dataframe, showing if the interval captures the population mean
