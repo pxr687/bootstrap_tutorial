@@ -35,7 +35,7 @@ plt.style.use('fivethirtyeight')
 
 # Confidence intervals
 
-- We will look at confidence intervals via a modern code-based method of generating them, called the bootsrap
+- We'll look at confidence intervals via modern, code-based methods - both for explaining what they mean, and how to generate them.
 
 *Note*: This page has content from the [Bootstrap](https://github.com/data-8/textbook/blob/64b20f0/notebooks/Bootstrap.ipynb)
 notebook of an older version of the [UC Berkeley data science course](https://inferentialthinking.com/). See the Berkeley course section of the [license file](https://uob-ds.github.io/cfd2021/license).
@@ -44,9 +44,9 @@ notebook of an older version of the [UC Berkeley data science course](https://in
 
 Consider this scenario: a data scientist has been asked to help with a research project in the field of historical epidemiology - analysing historical datasets related to health. 
 
-Her task is to calculate the average birthweight of babies born at a small hospital in Oakland, California in the year 1960. She is to do this in order to later test the hypothesis that babies born at this hospital in this year were underweight, relative to the national average at that time. (For now though, she is only interested in calculating the average birthweight of all the babies born at the hospital, in 1960).
+Her task is to calculate the average birthweight of babies born at a small hospital in Oakland, California in the year 1960. She is to do this in order to later test the hypothesis that babies born at this hospital in this year were underweight, relative to the national average at that time. 
 
-However, the data scientist is in a predicament.  Initially, she was granted access to a random sample of 25 baby records whilst awaiting clearance from the hospital's medical records department to access the complete dataset. The complete dataset includes the birthweights for all 1236 babies born at that hospital in 1960.
+However, the data scientist is in a predicament.  Initially, she was granted access to a random sample of 25 baby records whilst waiting for clearance from the hospital's medical records department to access the complete dataset. The complete dataset includes the birthweights for all 1236 babies born at that hospital in 1960.
 
 But disaster has struck, and the hospital's medical records department are refusing the data scientist access to the full dataset, owing to concerns about data privacy. (Alas, research rarely goes to plan!).
 
@@ -54,13 +54,15 @@ At the moment, she only has her random sample of 25 babies, which is shown as th
 
 ```{python}
 # load in the sample data (this IS real data!)
-babies_sample = pd.read_csv('data/babies_sample.csv')
+babies_sample = pd.read_csv('data/babies_sample.csv').round(2)
 
 # show the sample data
 babies_sample
 ```
 
 Here is the histogram of the data scientist's sample, and along with it's sample mean:
+
+*Note*: I am using "mean" and "average" interchangeably throughout this tutorial.
 
 ```{python}
 # calculate the sample mean
@@ -75,11 +77,11 @@ plt.legend(bbox_to_anchor = (1,1));
 ```
 
 <!-- #region -->
-Because the full dataset is inaccessible due to the decision of the medical records department, the random sample of 25 birthweights is the only evidence our data scientist has about mean birthweight in 1960. However, she doesn't care specifically about the mean birthweight of this random sample of 25 babies; *she cares about the mean birthweight of all 1236 babies born in 1960, at this particular hospital*. Let's refer to these 1236 babies as the *population* she is interested in.
+Now, our she doesn't care specifically about the mean birthweight of this random sample of 25 babies; *she cares about the mean birthweight of all 1236 babies born in 1960, at this particular hospital*. Let's refer to these 1236 babies as the *population* she is interested in.
 
 Somehow she needs to use her sample and its average birthweight to accurately estimate the population's average birthweight.
 
-> <b> Question: </b>: can our data scientist simply present her sample average as an estimate of the population average?
+> <b> Question: </b> can our data scientist simply present her sample average as an estimate of the population average? E.g. can she say something like "well, the sample was random, and therefore probably representative of the population, so the mean population birthweight probably is the same as the mean sample birthweight"?
 
 Our data scientist *could* simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. Consequently, if she were to use the sample average as her estimate of the population birthweight, her estimate would have been different as well.
 
@@ -104,7 +106,7 @@ babies_pop = pd.read_csv('data/babies.csv')
 babies_pop
 ```
 
-We are almost never in this situation in research - of being able to access the full population data - and so, from our luxury, all-knowing viewpoint, we can just plot the population data, and "peek" at the population mean:
+From our luxury, all-knowing viewpoint, we can just plot the population data, and "peek" at the population mean:
 
 ```{python}
 # plot a histogram, show the pop and pop mean
@@ -124,9 +126,7 @@ plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population Data');
 ```
 
-From our seemingly all-knowing position of being able to "see" the full population data, we can simulate the situation the data scientist is in, by drawing a random sample of 25 babies from the population of 1236 babies. 
-
-Further - because we have access to the population data - we can do this as many times as we like, so we can not only see how far off each sample average is from the actual population mean, we can also build an intuition as to how much sample averages vary as we draw lots of random samples (highlighting the issue our data scientist is concerned by).
+From our seemingly all-knowing position of being able to "see" the full population data, we can get a vivid feel for our data scientist's concerns. Because we have access to the population data we can really easily draw new random samples of 25 babies. We can do this as many times as we like, so we can not only see how far off each sample average is from the actual population mean, we can also build an intuition as to how much sample averages vary as we draw lots of random samples (highlighting the issue our data scientist is concerned by).
 
 The code cell below draws a random sample from the population data:
 
@@ -173,21 +173,17 @@ plt.title('Population & Sample');
 <!-- #region -->
 ## Plus or minus a bit
 
-I've just re-run several of the code cells above multiple times, each time drawing a new random sample from the population data. We can see that from each new random sample, sometimes we get a good estimate of the population mean, sometimes we get a bad estimate.
-
-Our data scientist, however, is the situation researchers are typically in: she has one random sample, and is not able to draw new random samples from the population at will. She has to estimate the population mean using the mean of her one, single sample.
-
-But: from our all-knowing perspective, we have seen that sample averages do not always capture the population average.
+So, from our omniscient viewpoint, we have seen that sample means do not always capture the population mean.
 
 Sometimes sample means are higher than the population mean, sometimes they are lower than the population mean.
 
-Sometimes the difference between the sample average from the population average is large, sometimes it is small.
+Sometimes the difference between the sample mean from the population mean is large, sometimes it is small.
 
 This phenomenon is called *sampling error* - sample averages tend to deviate from the population average, even when the sample is random.
 
 So when our data scientist is questioning whether her sample average is a good representation of the population average, she knows that the answer is something like:
 
-> "the population mean is probably somewhere near my sample mean, but because of sampling error the population mean is going to be my sample mean **plus or minus a bit**".
+> "Because of sampling error the population mean is going to be my sample mean **plus or minus a bit**".
 
 This "plus or minus a bit" here entails that her sample average is an *uncertain* estimate of the population average.
 
@@ -201,11 +197,9 @@ Currently, two things that would be relevant for answering this question are hid
 
 If she knew the population mean, she wouldn't have to infer anything from her sample. She could just report the population mean to the rest of her reserch team, and proceed with the rest of the project.
 
-But, even if she didn't know the true population mean, if she knew the amount by which sample averages vary - over repeated random sampling of the sort we've just seen in the code cells above - she could use that information to construct an *interval* in which the population mean probably lies. 
+But, even if she didn't know the true population mean, if she could draw many more random samples, she could record the mean of each, and then see how much the means of random samples vary from each other. She knows that her first sample was also subject to this variability - if she then takes the "spread" of the sample averages, she can say "the population mean is probably my sample average, plus or minus the 'spread' of the distribution of all of the random sample averages, because that's how much variability there is when you draw repeated samples and calculate their means". 
 
-Think of it this way: if our data scientist could draw many more random samples she could record the mean of each, and then see how much the means of random samples vary from each other. She knows that her first sample was also subject to this variability - if she then takes the "spread" of the sample averages, she can say "the population mean is probably my sample average, plus or minus the "spread" of the distribution of all of the random sample averages, because that's how much variability there is when you draw repeated samples and calculate their means". 
-
-This interval is a *confidence interval*. It gives us a precise estimate to how big "plus or minus a bit" it, when we say "the population mean is probably our sample mean, plus or minus a bit".
+This interval is a *confidence interval*. It gives us a precise estimate to how big "plus or minus a bit" is, when we say "the population mean is probably our sample mean, plus or minus a bit".
 
 ## Confidence intervals - from our "all knowing" perspective
 
@@ -276,6 +270,16 @@ width_of_interval = right_interval - left_interval
 width_of_interval 
 ```
 
+```{python}
+# minus "a bit"
+- width_of_interval/2
+```
+
+```{python}
+# plus "a bit"
++ width_of_interval/2
+```
+
 <b> What can we do with this interval? </b>
 
 The code cell below draws a new random sample and shows its mean.
@@ -310,21 +314,7 @@ plt.title('Population, Sample and \nConfidence Interval')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
-You can see that the interval we obtained from the sampling distribution contains the population mean a big proportion of the time, even when the sample mean deviates from the population mean.
-
-**If our data scientist knew this interval - even if she didn't know the population mean - she could present this interval alongside her sample mean, and tell her colleagues: "the population mean is probably within this interval around my sample mean".**
-
-```{python}
-# minus "a bit"
-- width_of_interval/2
-```
-
-```{python}
-# plus "a bit"
-+ width_of_interval/2
-```
-
-The cell below repeats the code from the cell (entitled "Population, Sample and Confidence Interval") above 100 times (apart from plotting the graph!), and it shows the proportion of times over all 100 repeats that the interval around the sample mean contained the population mean
+The cell below repeats the code from the cell above 100 times (apart from plotting the graph!), and it shows the proportion of times over all 100 repeats that the interval around the sample mean contained the population mean
 
 ```{python}
 # set the number of repeats
@@ -397,7 +387,7 @@ display(Markdown(f"<b>{sum(contains_population_mean)/number_of_repeats * 100}% o
 
 This is meaning of a confidence interval - over repeated random samples drawn from the population, the interval will contain the population mean around 95% of the time.
 
-So, even if our data scientist didn't know the population mean, if she had access to this interval she could present it alongside her sample mean and confidently inform her colleagues that the population mean is likely within this interval, centered around her sample mean.
+**If our data scientist knew this interval - even if she didn't know the population mean - she could present this interval alongside her sample mean, and confidently tell her colleagues: "the population mean is probably within this interval around my sample mean".**
 
 *But* - and this is a huge but - we obtained our confidence interval here only because we are in the godlike, all-knowing position of being able to access the whole population data, and so we were able to build our confidence interval by repeatedly drawing random samples from the population. This told us how much the means of random samples typically vary from each other, and we used that spread to construct our confidence interval.
 
