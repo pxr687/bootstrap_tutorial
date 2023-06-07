@@ -2,6 +2,8 @@
 A tutorial on the meaning of confidence intervals, and how to obtain them
 via bootstrapping.
 
+If you want to code along in the LIS Jupyterhub, please use this link: http://bit.ly/confidence_tutorial
+
 If you are coding along with the presentation, the file you need is 
 `bootstrap.ipynb`.
 
