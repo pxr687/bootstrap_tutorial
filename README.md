@@ -1,4 +1,6 @@
 # README
+A tutorial on the meaning of confidence intervals, and how to obtain them
+via bootstrapping.
 
 If you are coding along with the presentation, the file you need is 
 `bootstrap.ipynb`.
