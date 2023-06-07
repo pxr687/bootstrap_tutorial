@@ -716,8 +716,8 @@ BUT if we're in a real world situation - with no access to the full population d
 
 - treat the random sample as if it is the population
 - draw many new "bootstrap resamples" from the original sample, by sampling WITH replacement
-- plot the distribution of means from these boostrap resamples
-- use the "spread" of the distribution of boostrap means to construct our confidence interval
+- plot the distribution of means from these bootstrap resamples
+- use the "spread" of the distribution of bootstrap means to construct our confidence interval
 
 We have seen that boostrap confidence intervals will capture the population mean around 95% of the time, over many new random samples...
 
