@@ -4,7 +4,7 @@ via bootstrapping.
 
 If you want to code along in the LIS Jupyterhub, please use this link: http://bit.ly/confidence_tutorial
 
-If you are coding along with the presentation, the file you need is 
+If you download this repo to code along with the presentation, then the file you need is 
 `bootstrap.ipynb`.
 
 ## Description of files/folders
