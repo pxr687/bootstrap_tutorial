@@ -412,40 +412,14 @@ babies_sample
 
 ## The Bootstrap: resampling from the sample
 
-<!-- #region -->
+
 Here are the steps of *the bootstrap method* for simulating the process of drawing new random
 samples from the population:
 
 - **Treat the original sample as if it were the population.**
-- **Draw a new sample - the same size as the original sample -**, at random **with** replacement, from the original sample.
+- **Draw a new sample** (the same size as the original sample) at random **with** replacement, from the original sample 
 
 So let's just break that down: to get our new sample - I'll refer to this as a "bootstrap resample" - we select a baby at random from our original sample and record their birthweight. We then put that baby's record back in with the other records in the sample and then draw again at random. We do this until we have a new sample of 25 birthweights.
-
-### Why do we resample WITH replacement?
-
-If we drew 25 times at random *without* replacement from our sample of size
-25, we would just get the same sample back. By drawing *with* replacement, we
-create the possibility for the new samples to be different from the original,
-because some babies might be drawn more than once and others not at all.
-
-
-### Why does each resample have to be the same size as the original sample?
-
-It is important that the bootstrap resample is the same size as the original sample
-size. Since our original sample consisted of 25 babies, our sample
-mean was based on 25 babies. To see how different the sample mean could have
-been, we have to compare it to the mean of other samples of size 25.
-
-![](images/bootstrap_pic_1.png)
-<!-- #endregion -->
-
-## A resampled mean
-
-To get a bootstrap resample, we want a sample the same size as the original sample (25 babies), where we are
-sampling *with replacement*. 
-
-Here is one new sample drawn from the original sample, with replacement, and
-the corresponding sample mean.
 
 ```{python}
 # draw a sample of size 25 from our original sample, with replacement.
@@ -464,6 +438,25 @@ plt.xlabel('Birthweight (kg)')
 plt.title('Bootstrap Resample')
 plt.legend(bbox_to_anchor = (1,1));
 ```
+
+<!-- #region -->
+### Why do we resample WITH replacement?
+
+If we drew 25 times at random *without* replacement from our sample of size
+25, we would just get the same sample back. By drawing *with* replacement, we
+create the possibility for the new samples to be different from the original,
+because some babies might be drawn more than once and others not at all.
+
+
+### Why does each resample have to be the same size as the original sample?
+
+It is important that the bootstrap resample is the same size as the original sample
+size. Since our original sample consisted of 25 babies, our sample
+mean was based on 25 babies. To see how different the sample mean could have
+been, we have to compare it to the mean of other samples of size 25.
+
+![](images/bootstrap_pic_1.png)
+<!-- #endregion -->
 
 Each time we resample, we generate something like a new sample mean. By resampling again and again, we will get many such new sample means, allowing us to build a distribution of bootstrapped sample means. 
 
