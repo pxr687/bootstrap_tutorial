@@ -81,7 +81,7 @@ Now, our she doesn't care specifically about the mean birthweight of this random
 
 Somehow she needs to use her sample and its average birthweight to accurately estimate the population's average birthweight.
 
-> <b> Question: </b> can our data scientist simply present her sample average as an estimate of the population average? E.g. can she say something like "well, the sample was random, and therefore probably representative of the population, so the mean population birthweight probably is the same as the mean sample birthweight"?
+> <b> Question: </b> can our data scientist simply present her sample average as an estimate of the population average? E.g. can she make a statement to her colleagues like: "well, the sample was random, and therefore probably representative of the population, so the mean population birthweight probably is the same as the mean sample birthweight"?
 
 Our data scientist *could* simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. So, were she to rely on the sample average as her estimate of the average population birthweight, her estimate would have been different as well.
 
@@ -641,6 +641,10 @@ big_sim_left_ends = np.empty(n_intervals)
 big_sim_right_ends = np.empty(n_intervals)
 big_sim_random_sample_means = np.empty(n_intervals)
 
+# array to store the standard deviation of each sample (used in 
+# the appendix section)
+big_sim_random_sample_stds = np.empty(n_intervals)
+
 # repeat the following process, n_intervals number of times...
 for i in np.arange(n_intervals):
     
@@ -661,6 +665,7 @@ for i in np.arange(n_intervals):
     big_sim_left_ends[i] = current_left_end
     big_sim_right_ends[i] = current_right_end
     big_sim_random_sample_means[i] = this_sample.mean()
+    big_sim_random_sample_stds[i] = this_sample.std(ddof = 1)
 
 # show when done
 display(Markdown(f"Completed!"))
@@ -683,6 +688,7 @@ display(Markdown(f"{big_sim_intervals_and_means['Contains Population Mean'].sum(
 
 # set the figure size
 plt.figure(figsize=(10,10))
+
 
 # plot the bootstrap confidence intervals
 for i in np.arange(len(intervals)):
@@ -716,18 +722,89 @@ BUT if we're in a real world situation - with no access to the full population d
 
 We have seen that bootstrap confidence intervals will capture the population mean around 95% of the time, over many new random samples...
 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
 <!-- #region -->
-# If there is time: 
+---------------------------------------------------------------------------------------------------------------------------
+# Appendix: 
+
+Just some extra topics for interested readers...
 
 ### Why does bootstrapping work?
 
-Why is this a good idea? On average, **random samples tend to resemble the population...so random bootstrap resamples of the sample tend to resemble the population as well**. This entails that when we generate bootstrap resamples, they provide pretty good estimates of how much the means of random samples tend to vary from each other (and this is in the information we need to build our confidence interval!).
+Bootstrapping works because, on average, **random samples tend to resemble the population...so random bootstrap resamples of the sample tend to resemble the population as well**. This entails that when we generate bootstrap resamples, they provide a pretty good simulation of how much the means of random samples taken from the population tend to vary from each other (and this is in the information we need to build our confidence interval!).
 
 ![](images/bootstrap_pic_2.png)
 
+A good way to think of this is as follows. Think of the birthweights in our data scientist's original random sample, which is shown again below:
+<!-- #endregion -->
+
+```{python}
+# our data scientists random sample
+babies_sample
+```
+
+Now imagine a dataframe in which each birthweight in the sample is repeated 49 times. This means that after values are repeated there are 1225 birthweights, which is nearly the same as the number of babies in the population. (We are using 49 repeats becasue we can't get exactly 1236 birthweights by repeating a sample of 25...). Let's call this dataframe the "pseudopopulation". The code cell below illustrates how this would look:
+
+```{python}
+# repeat each birthweight 49 times 
+pseudopopulation = pd.DataFrame({'birthweight_kg': np.repeat(babies_sample['birthweight_kg'].values, 49)})
+
+# show the pseudopopulation
+pseudopopulation
+```
+
+Each time we resample, it is like we are drawing a random sample *without replacement* from this pseudopopulation (when an individual baby's birthweight makes it into our resample several times, you can imagine this as different repeats of that birthweight being drawn from the pseudopopulation).
+
+So, if our original sample - being a random sample - is on average likely to resemble the population, then samples drawn from this pseduopopulation are likely to resemble samples drawn from the actual population. This allows us to simulate the process of drawing many random samples from the actual population, by resampling our original random sample.
+
+Though, the quality of this process depends on how representative our original random sample is... (see the section **What if we bootstrap from an unrepresentative sample?** below for more on that).
+
+### What if we bootstrap from an unrepresentative sample?
+
+A good way to think of bootstrapping is this: over multiple labs and research projects which are trying to estimate the same population parameter (mean, median, odds ratio etc.), bootstrap confidence intervals will contain the population parameter 95% of the time (as a proportion of the total research projects).
+
+Because sampling is random, a given sample in a given research project may be unrepresentative. Bootstrapping cannot fix this is issue. **This is why replication and open science are so important!**.
+
+A small proportion of the time we will be wrong when we place our trust in a confidence interval, even with perfectly random sampling. However, for any sample we have, confidence intervals provide the best guide available to where the population parameter is. Over repeated replications, we will be right most of the time, if we trust the confidence intervals...
+
+More from Stack Exchange: https://stats.stackexchange.com/questions/157639/bootstrapping-wont-always-return-population-statistics-so-why-say-it-does
 
 ### "Why are the sampling distributions normal?' - the Central Limit Theorem
-<!-- #endregion -->
+
+You may be wondering why the distributions of sample means (whether generated from drawing new samples from the population or from bootstrapping) are normal (bell-like) distributions.
+
+This is because of the [Central Limit Theorem](https://online.stat.psu.edu/stat506/lesson/1/1.4), which is illustrated below:
 
 ```{python}
 # print an explanation of the graph
@@ -745,15 +822,65 @@ regardless of the (non)normality of the underlying population."""))
 plot_CTL_illustration()
 ```
 
-### What if we bootstrap from an unrepresentative sample?
+The above applies to the mean, which is the statistic we've been interested in for this tutorial. However, not all of the bootstrap resample distributions of all statistics will be normal. For example, here is a bootstrap resampling distribution for a different statistic, the odds ratio, generated from some simulated data. The details aren't important here, but the odds ratio is a ratio of nonnegative numbers - so it cannot take negative values, and it's sampling distribution is skewed: 
 
-A good way to think of bootstrapping is this: over multiple labs and research projects trying to estimate the same population parameter (mean, median, odds ratio etc.), bootstrap confidence intervals will contain the population mean 95% of the time (as a proportion of the total research projects).
+![](images/odds_ratio_sampling_distribution.png)
 
-Because sampling is random, a given sample in a given research project may be unrepresentative. Bootstrapping cannot fix this is issue. **This is why replication and open science are so important!**.
+Where bootstrap resampling distributions are not normal, taking the middle 95% percent of the distribution will give you a crude confidence interval, but really corrections should be applied, to account for the skewness of the distribution. For more information, please see the section entitled *"Bootstrap example: odds ratio to compare proportions"* at this [link](https://www.zoology.ubc.ca/biol548/lecturepdf/10.Bootstrap.pdf), and the section entitled *"Adjusting for asymmetrical resampling distributions"* [here](https://acclab.github.io/bootstrap-confidence-intervals.html).
 
-A small proportion of the time we will be wrong, even with perfectly random sampling. However, for any sample we have, confidence intervals provide the best guide available to where the population parameter is. Over repeated replications, we will be right most of the time, if we trust the confidence intervals...
+### Why is the width of the confidence interval from the bootstrap different to the width of the confidence interval that was generated from the "all-knowing" perspective?
 
-More from Stack Exchange: https://stats.stackexchange.com/questions/157639/bootstrapping-wont-always-return-population-statistics-so-why-say-it-does
+You may have noticed that the width of the confidence interval that we generated by drawing 1000 new random samples *from the population* is different from the width of the confidence interval we got from bootstrapping the data scientists's single random sample:
+
+```{python}
+# width of the confidence interval from the all-knowing perspective
+width_of_interval
+```
+
+```{python}
+# width of the confidence interval from the bootstrap of the data scientist's random sample
+width_from_bootstrap
+```
+
+Why is this? It stems from the fact that the bootstrap treats the random sample as if it is the population The variance (spread) of the random sample affects the width of the bootstrapped confidence interval that we get from that sample. 
+
+You can think of confidence intervals in general as measures of uncertainty - if we bootstrap from samples with high spread, then there is more uncertainty, because there is more variability in the resampled means that we get from that sample.
+
+To make this clearer, the x-axis of the scatterplot below shows the standard deviation (a measure of spread) of each of the 100 random samples drawn in the "rewinding time" simulation above. The y-axis shows the width of the bootstrap confidence interval for each of those 100 random samples. Each datapoint represents one repeat: the standard deviation of one random sample, and the spread of the bootstrap confidence interval for that random sample.
+
+We can see that random samples with higher spread (standard deviation) have wider boostrap confidence intervals:
+
+```{python}
+# show the widths of the bootstrap confidence interval, from the "rewinding time"
+# simulation
+plt.figure()
+plt.scatter(big_sim_random_sample_stds, big_sim_right_ends - big_sim_left_ends)
+plt.xlabel('Standard Deviation of Sample')
+plt.ylabel('Width of Boostrap Confidence Interval');
+```
+
+Our data scientist's original random sample had quite a high standard deviation, so it gives quite a wide boostrap confidence interval:
+
+```{python}
+# the standard deviation of our data scientist's sample
+babies_sample.std(ddof = 1).values
+```
+
+### Why "95%" - could I use a different level of confidence?
+
+I followed convention here by generating 95% confidence intervals. In fact, you can set the confidence level by "grabbing" a different percentage of the distribution of bootstrap sample means. E.g. if you "grab" the middle 99% of the distribution of bootstrap sample means, then this gives a 99% rather than 95% confidence interval.
+
+### Why is it called "bootstrapping"?!
+
+The bootstrap was first introduced by [Efron (1979)](https://www.jstor.org/stable/2958830) and the term comes from the phrase ["lift oneself up by one's own bootstraps"](https://en.wiktionary.org/wiki/pull_oneself_up_by_one%27s_bootstraps) - a reference to how the bootstrap seems counterintuitive, because we can estimate the spread of a sampling distribution of a statistic by resampling a single sample...without having to generate new samples fromt the population. The fact this works seems a bit like pulling oneself into the air by the bootstraps!
+
+### What assumptions does bootstrapping make?
+
+Boostrapping actually makes no distributional assumptions about your sample data, or about the population from which it was drawn. It assumes that your sample is representative of the population (see the section "What if we bootstrap from an unrepresentative sample?" above for a discussion about what happens when this isn't the case). 
+
+It is important to note that if the bootstrap sampling distribution of a statistic is not normal, then a correction may need to be applied when calculating the confidence intervals (see see the section entitled *"Bootstrap example: odds ratio to compare proportions"* at this [link](https://www.zoology.ubc.ca/biol548/lecturepdf/10.Bootstrap.pdf), and the section entitled *"Adjusting for asymmetrical resampling distributions"* [here](https://acclab.github.io/bootstrap-confidence-intervals.html).
+
+Bootstrapping also assumes that the observations in your sample are indpendent - so the "score" of one element in your sample was not influenced by the "scores" of other elements in the sample.
 
 
 *Note*: This page has content from the [Bootstrap](https://github.com/data-8/textbook/blob/64b20f0/notebooks/Bootstrap.ipynb)
