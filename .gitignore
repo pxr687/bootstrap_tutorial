@@ -7,3 +7,5 @@
 __pycache__/bootstrap_plots.cpython-311.pyc
 __pycache__/central_limit_illustration.cpython-311.pyc
 __pycache__/population_sample_image_generator.cpython-311.pyc
+src/__pycache__/population_sample_image_generator.cpython-310.pyc
+src/__pycache__/central_limit_illustration.cpython-310.pyc
