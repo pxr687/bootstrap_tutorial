@@ -8,7 +8,7 @@ jupyter:
       extension: .Rmd
       format_name: rmarkdown
       format_version: '1.2'
-      jupytext_version: 1.14.6
+      jupytext_version: 1.14.5
   kernelspec:
     display_name: Python 3 (ipykernel)
     language: python
@@ -449,7 +449,7 @@ because some babies might be drawn more than once and others not at all.
 
 It is important that the bootstrap resample is the same size as the original sample
 size. Since our original sample consisted of 25 babies, our sample
-mean was based on 25 babies. To see how different the sample mean could have
+mean was based on 25 babies. To simulate how different the sample mean could have
 been, we have to compare it to the mean of other samples of size 25.
 
 ![](images/bootstrap_pic_1.png)
@@ -460,6 +460,8 @@ Each time we resample, we generate something like a new sample mean. By resampli
 This tells us how much sample means are likely to vary from each other as we draw repeated new random samples, and this information can be used to build a confidence interval. 
 
 **But this time we aren't drawing any new samples from the population data** - e.g. we aren't relying on our rare and luxury perspective - in order to generate this distribution of sample means. We are "bootstrapping" this distribution from one random sample. So, this technique is available to our data scientist, using just the one sample she has!
+
+> **Question**: is everyone conceptually clear on how bootstrapping works?
 
 ## A distribution of means from bootstrap resamples
 
