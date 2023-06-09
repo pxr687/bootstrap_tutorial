@@ -46,9 +46,9 @@ Consider this scenario: a data scientist has been asked to help with a research 
 
 Her task at the moment is simply to calculate the average birthweight of babies born at a small hospital in Oakland, California in the year 1960. She is to do this in order to later test the hypothesis that babies born at this hospital in this year were underweight, relative to the national average at that time. 
 
-However, the data scientist is in a predicament.  Initially, she was granted access to a random sample of 25 baby records whilst waiting for clearance from the hospital's medical records department to access the complete dataset. The complete dataset includes the birthweights for all 1236 babies born at that hospital in 1960.
+However, the data scientist is in a predicament.  Initially, she was granted access to a random sample of 25 baby records whilst waiting for clearance from the hospital's records department to access the complete dataset. The complete dataset includes the birthweights for all 1236 babies born at that hospital in 1960.
 
-But disaster has struck, and the hospital's medical records department are refusing the data scientist access to the full dataset, owing to concerns about data privacy. (Alas, research rarely goes to plan!).
+But disaster has struck, and the hospital's records department are refusing the data scientist access to the full dataset, owing to concerns about data privacy. (Alas, research rarely goes to plan!).
 
 At the moment, she only has her random sample of 25 babies, which is shown as the output of the code cell below:
 
@@ -126,7 +126,7 @@ plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population Data');
 ```
 
-From our seemingly all-knowing position of being able to "see" the full population data, we can get a vivid feel for our data scientist's concerns. Because we have access to the population data we can easily draw new random samples of 25 babies. We can do this as many times as we like, so we can not only see how far off each sample average is from the actual population mean, we can also build an intuition as to how much sample averages vary as we draw lots of random samples (highlighting the issue our data scientist is concerned by).
+We can use this all-knowing perspective to get a vivid feel for our data scientist's concerns. Because we have access to the population data we can easily draw new random samples of 25 babies. We can do this as many times as we like, so we can not only see how far off each sample average is from the actual population mean, we can also build an intuition as to how much sample averages vary as we draw lots of random samples (highlighting the issue our data scientist is concerned by).
 
 The code cell below draws a random sample from the population data:
 
@@ -139,9 +139,7 @@ display(Markdown(f"\nNew sample mean = {np.mean(new_sample['birthweight_kg']).ro
 display(new_sample.round(2))
 ```
 
-From our omniscient perspective, let's draw another random sample and let's plot it against the population data, so we can see graphically how close or far our sample average is from the population average.
-
-Through running this code cell multiple times, we can build an intuition for how much the sample averages vary, over repeated samples.
+The cell below draws another random sample and plots it against the population data, so we can see graphically how close or far our sample average is from the population average.
 
 As we run the cell multiple times, let's evaluate how accurate it would be to use each single sample's mean as an estimate of the population mean - this will show us why our data scientist is reluctant to "trust" the mean of her single sample as an estimate of the population average:
 
