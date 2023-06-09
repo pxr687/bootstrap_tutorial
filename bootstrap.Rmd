@@ -77,15 +77,13 @@ plt.legend(bbox_to_anchor = (1,1));
 ```
 
 <!-- #region -->
-Now, our she doesn't care specifically about the mean birthweight of this random sample of 25 babies; *she cares about the mean birthweight of all 1236 babies born in 1960, at the hospital*. Let's refer to these 1236 babies as the *population* she is interested in.
+Now, our data scientist doesn't care specifically about the mean birthweight of this random sample of 25 babies; *she cares about the mean birthweight of all 1236 babies born at the hospital in 1960*. Let's refer to these 1236 babies as the *population* she is interested in.
 
 Somehow she needs to use her sample and its average birthweight to accurately estimate the population's average birthweight.
 
 > <b> Question: </b> can our data scientist simply present her sample average as an estimate of the population average? E.g. can she make a statement to her colleagues like: "well, the sample was random, and therefore probably representative of the population, so the mean population birthweight probably is the same as the mean sample birthweight"?
 
-Our data scientist *could* simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. So, were she to rely on the sample average as her estimate of the average population birthweight, her estimate would have been different as well.
-
-If her estimate very easily could have been different, then why should she believe that her specific sample contains the best estimate of the population mean?
+Our data scientist *could* simply take the average birthweight of her sample and report it as the estimated population birthweight, but she knows that her random sample is just one of many possible random samples. She knows that, on a different day, different babies' records would have made it into her random sample, and the sample's average birthweight would probably have been different. So, were she to rely on the sample average as her estimate of the average population birthweight, her estimate of the population average would have been different as well.
 
 Because of these concerns, she is reluctant to use the sample mean *by itself* as an estimate of the population mean.
 
@@ -93,9 +91,9 @@ Because of these concerns, she is reluctant to use the sample mean *by itself* a
 
 Let's not just take our data scientist's word here though - let's use the power of code to empirically demonstrate the principles behind her concerns.
 
-In order to do this I'd like you to imagine that we (everyone present today) do have access to the full dataset. Let's imagine we work in another department at the hospital, and we can view the full data. (**But** we're not allowed to share the population data - or anything derived from the population data - with anyone outside of the hospital).
+In order to do this I'd like you to imagine that we (everyone here today) work in another department at the hospital, and we can view the full dataset. (**But** we're not allowed to share the population data - or anything derived from the population data - with anyone outside of the hospital).
 
-Here is the full dataset, containing the birthweights of all babies born in 1960 at the hospital:
+Here is the full dataset, containing the birthweights of all babies born at the hospital in 1960:
 <!-- #endregion -->
 
 ```{python}
@@ -106,7 +104,7 @@ babies_pop = pd.read_csv('data/babies.csv').round(2)
 babies_pop
 ```
 
-From our luxury, all-knowing viewpoint, we can just plot the population data, and "peek" at the population mean:
+We are almost never in this situation in research (of being able to view a full population of data), but from our luxury, all-knowing viewpoint, we can just plot the population data, and "peek" at the population mean:
 
 ```{python}
 # plot a histogram, show the pop and pop mean
@@ -126,7 +124,7 @@ plt.legend(bbox_to_anchor = (1,1))
 plt.title('Population Data');
 ```
 
-We can use this all-knowing perspective to get a vivid feel for our data scientist's concerns. Because we have access to the population data we can easily draw new random samples of 25 babies. We can do this as many times as we like, so we can not only see how far off each sample average is from the actual population mean, we can also build an intuition as to how much sample averages vary as we draw lots of random samples (highlighting the issue our data scientist is concerned by).
+We can use this all-knowing perspective to get a vivid feel for our data scientist's concerns. Because we have access to the population data we can easily draw new random samples of 25 babies. We can do this as many times as we like, so we can draw lots of random samples, and this will give us an idea of *how different our data scientist's sample could have been*, highlighting the issues she is concerned by.
 
 The code cell below draws a random sample from the population data:
 
@@ -258,7 +256,7 @@ plt.xlabel('Mean Birthweight (kg)')
 plt.title(f'\nDistribution of Sample Means \n({number_of_samples} samples)\n(All-knowing perspective)');
 ```
 
-Let's calculate how "wide" the interval is - that tells us precisely what "plus or minus a bit is", as it tells us how much the sample means typically vary from each other, as we draw lots of random samples:
+Let's calculate how "wide" the interval is:
 
 ```{python}
 # calculate the width of the interval
@@ -268,7 +266,7 @@ width_of_interval = right_interval - left_interval
 width_of_interval 
 ```
 
-Actually, if we place our data scientist's sample mean exactly halfway into this interval, then this tells us how big "plus or minus a bit" is (we will see more on this below):
+We can now use the width of this interval to quantify "plus or minus a bit" - we place a sample mean exactly halfway into this interval, then this tells us how big "plus or minus a bit" is (we will see more on this below):
 
 ```{python}
 # minus "a bit"
