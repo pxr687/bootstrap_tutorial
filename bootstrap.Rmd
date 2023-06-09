@@ -268,7 +268,7 @@ width_of_interval = right_interval - left_interval
 width_of_interval 
 ```
 
-Actually, if we take half the width of this interval, that quantifies how big "plus or minus a bit" is (we will see why in the cell below!).
+Actually, if we place our data scientist's sample mean exactly halfway into this interval, then this tells us how big "plus or minus a bit" is (we will see more on this below):
 
 ```{python}
 # minus "a bit"
@@ -311,6 +311,7 @@ plt.axvline(new_sample.mean(), color = "red",
             label = f'Sample Mean = {new_sample.mean().round(2)}')
 
 plt.title('Population, Sample and \nConfidence Interval')
+plt.xlabel('Birthweight (kg)')
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
@@ -529,7 +530,8 @@ resampled_means['Bootstrap Sample means'] = bootstrap_sample_means
 resampled_means.plot.hist(color = 'purple')
 
 # add title and labels to the plot
-plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resamples}) resamples')
+plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resamples} resamples)')
+plt.xlabel("Mean Birthweight (kg)")
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
@@ -556,7 +558,8 @@ resampled_means.plot.hist(color = 'purple')
 plt.plot([left_bootstrap_interval, right_bootstrap_interval], [5, 5],
          color='yellow', lw=8, zorder=1,
          label = "Interval containing 95% of the\nbootstrapped sample means")
-plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resamples}) resamples')
+plt.title(f'Bootstrap distribution of sample means \n({number_of_bootstrap_resamples} resamples)')
+plt.xlabel("Mean Birthweight (kg)")
 plt.legend(bbox_to_anchor = (1, 1));
 ```
 
