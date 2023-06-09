@@ -72,7 +72,7 @@ sample_mean = babies_sample['birthweight_kg'].mean()
 plt.hist(babies_sample['birthweight_kg'], color = 'darkred')
 plt.axvline(sample_mean, color = 'red', label = f"Sample Mean (= {round(sample_mean, 2)})")
 plt.xlabel('Birthweight (kg)')
-plt.title('Random Sample')
+plt.title('Random Sample') 
 plt.legend(bbox_to_anchor = (1,1));
 ```
 
